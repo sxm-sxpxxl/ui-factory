@@ -1,0 +1,26 @@
+{
+  "name": "com.sxm.ui-factory",
+  "version": "1.0.0",
+  "displayName": "UI Factory",
+  "description": "Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to uGUI and UIElements formats.",
+  "unity": "2020.3",
+  "unityRelease": "17f1",
+  "license": "MIT",
+  "keywords": [
+    "unity",
+    "ui",
+    "factory",
+    "library",
+    "mesh",
+    "chart",
+    "line",
+    "line-chart",
+    "graph",
+    "point",
+    "series"
+  ],
+  "author": {
+    "name": "Alexey Pestov",
+    "url": "https://github.com/sxm-sxpxxl"
+  }
+}

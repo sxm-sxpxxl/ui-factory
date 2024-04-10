@@ -1,0 +1,14 @@
+{
+    "name": "UIFactory.Runtime",
+    "rootNamespace": "Sxm.UIFactory",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
