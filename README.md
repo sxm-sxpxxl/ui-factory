@@ -1,6 +1,10 @@
 [![Unity Version](https://img.shields.io/badge/unity-2020.3%2B-blue)](https://unity3d.com/get-unity/download)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/sxm-sxpxxl/parallax-effect/blob/master/LICENSE.md)
 
+<p align="left">
+  <img alt="line-chart-preview" src="https://github.com/sxm-sxpxxl/ui-factory/assets/37039414/3459c8f9-7d07-4830-b0df-2a4a48c9e01a" />
+</p>
+
 ## About
 
 Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to UIElements format (uGUI in plans).
