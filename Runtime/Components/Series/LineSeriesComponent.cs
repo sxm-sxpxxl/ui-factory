@@ -6,7 +6,7 @@ namespace Sxm.UIFactory.Components
 {
     internal class LineSeriesComponent : MeshComponent<LineSeriesParameters>
     {
-        private List<Guid?> _linesCachedIds;
+        private Guid?[] _cachedLinesIds;
 
         protected override void BuildInternal(ref List<MeshData> meshes, LineSeriesParameters parameters)
         {
@@ -18,9 +18,10 @@ namespace Sxm.UIFactory.Components
                 return;
 
             var linesCount = parameters.Points.Count - (parameters.Closed ? 0 : 1);
-            if (_linesCachedIds == null || _linesCachedIds.Count != linesCount)
+            if (_cachedLinesIds == null || _cachedLinesIds.Length != linesCount)
             {
-                _linesCachedIds = GetRawCachedIds(linesCount);
+                // todo@sxm: maybe should use ArrayPool for best performance? But first need to evaluate the effectiveness of the solution with GC (#1)
+                _cachedLinesIds = new Guid?[linesCount];
             }
 
             for (var currentPointIndex = 0; currentPointIndex < linesCount; currentPointIndex++)
@@ -42,13 +43,11 @@ namespace Sxm.UIFactory.Components
                 lineSegmentParameters.Color = parameters.LineParameters.Color;
 
                 var instance = UIMeshFactory
-                    .Build(lineSegmentParameters, _linesCachedIds[currentPointIndex])
-                    .CacheComponentIdTo(ref _linesCachedIds, sourceIndex: currentPointIndex);
+                    .Build(lineSegmentParameters, _cachedLinesIds[currentPointIndex])
+                    .CacheComponentIdTo(ref _cachedLinesIds, sourceIndex: currentPointIndex);
 
                 meshes.AddRange(instance.Data);
             }
         }
-
-        private static List<Guid?> GetRawCachedIds(int count) => new List<Guid?>(new Guid?[count]);
     }
 }

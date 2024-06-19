@@ -3,6 +3,7 @@ using UnityEngine.Assertions;
 
 namespace Sxm.UIFactory
 {
+    // todo@sxm: refactoring (indices get method, one single MeshData constructor, readonly struct)
     public class MeshData
     {
         private interface IVerifiable

@@ -6,8 +6,9 @@ namespace Sxm.UIFactory.Components
 {
     internal sealed class PointSeriesComponent : MeshComponent<PointSeriesParameters>
     {
-        private List<Guid?> _pointsCachedIds;
+        private Guid?[] _cachedPointsIds;
 
+        // todo@sxm: maybe a yield generator will be best decision
         protected override void BuildInternal(ref List<MeshData> meshes, PointSeriesParameters parameters)
         {
             Assert.IsNotNull(parameters.Points, "parameters.Points != null");
@@ -16,9 +17,10 @@ namespace Sxm.UIFactory.Components
             if (parameters.Points.Count == 0)
                 return;
 
-            if (_pointsCachedIds == null || _pointsCachedIds.Count != parameters.Points.Count)
+            if (_cachedPointsIds == null || _cachedPointsIds.Length != parameters.Points.Count)
             {
-                _pointsCachedIds = GetRawCachedIds(parameters.Points.Count);
+                // todo@sxm: maybe should use ArrayPool for best performance? But first need to evaluate the effectiveness of the solution with GC (#2)
+                _cachedPointsIds = new Guid?[parameters.Points.Count];
             }
 
             for (var i = 0; i < parameters.Points.Count; i++)
@@ -30,13 +32,11 @@ namespace Sxm.UIFactory.Components
                 pointParameters.Color = parameters.DotParameters.Color;
 
                 var instance = UIMeshFactory
-                    .Build(pointParameters, _pointsCachedIds[i])
-                    .CacheComponentIdTo(ref _pointsCachedIds, sourceIndex: i);
+                    .Build(pointParameters, _cachedPointsIds[i])
+                    .CacheComponentIdTo(ref _cachedPointsIds, sourceIndex: i);
 
                 meshes.AddRange(instance.Data);
             }
         }
-
-        private static List<Guid?> GetRawCachedIds(int count) => new List<Guid?>(new Guid?[count]);
     }
 }

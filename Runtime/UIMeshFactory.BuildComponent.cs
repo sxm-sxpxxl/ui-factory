@@ -102,7 +102,7 @@ namespace Sxm.UIFactory
             return cachedMeshInstance;
         }
 
-        public static CachedMeshInstance CacheComponentIdTo(this CachedMeshInstance cachedMeshInstance, ref List<Guid?> sources, int sourceIndex)
+        public static CachedMeshInstance CacheComponentIdTo(this CachedMeshInstance cachedMeshInstance, ref Guid?[] sources, int sourceIndex)
         {
             sources[sourceIndex] = cachedMeshInstance.CachedComponentId;
             return cachedMeshInstance;
