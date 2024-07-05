@@ -3,62 +3,61 @@ using UnityEngine.Assertions;
 
 namespace Sxm.UIFactory
 {
-    // todo@sxm: refactoring (indices get method, one single MeshData constructor, readonly struct)
-    public class MeshData
+    public readonly struct MeshData
     {
-        private interface IVerifiable
+        private interface IMeshDataAllocationRequest
         {
-            void Verify();
+            MeshData Allocate();
         }
 
-        public struct QuadRequest : IVerifiable
+        public readonly struct QuadAllocationRequest : IMeshDataAllocationRequest
         {
-            public int QuadsCount;
-            public void Verify() => Assert.IsTrue(QuadsCount > 0);
-        }
+            private readonly int _quadsCount;
 
-        public struct TriangleSameVertexRequest : IVerifiable
-        {
-            public int TriangleOrVertexCount;
-            public void Verify() => Assert.IsTrue(TriangleOrVertexCount > 0);
-        }
-
-        public struct TriangleNotSameVertexRequest : IVerifiable
-        {
-            public int TrianglesCount;
-            public int VerticesCount;
-
-            public void Verify()
+            public QuadAllocationRequest(int quadsCount)
             {
-                Assert.IsTrue(TrianglesCount > 0);
-                Assert.IsTrue(VerticesCount > 0);
-                Assert.IsTrue(TrianglesCount < VerticesCount);
+                Assert.IsTrue(quadsCount > 0);
+                _quadsCount = quadsCount;
             }
+
+            public MeshData Allocate() => new(vertices: 4 * _quadsCount, indices: 6 * _quadsCount);
         }
 
-        public Vector2[] Vertices;
-        public ushort[] Indices;
-        public Color[] TintColors;
-
-        public MeshData(QuadRequest request)
+        public readonly struct TriangleSameVertexAllocationRequest : IMeshDataAllocationRequest
         {
-            request.Verify();
-            CreateData(vertices: 4 * request.QuadsCount, indices: 6 * request.QuadsCount);
+            private readonly int _triangleOrVertexCount;
+
+            public TriangleSameVertexAllocationRequest(int triangleOrVertexCount)
+            {
+                Assert.IsTrue(triangleOrVertexCount > 0);
+                _triangleOrVertexCount = triangleOrVertexCount;
+            }
+
+            public MeshData Allocate() => new(vertices: _triangleOrVertexCount, indices: 3 * _triangleOrVertexCount);
         }
 
-        public MeshData(TriangleSameVertexRequest request)
+        public readonly struct TriangleNotSameVertexAllocationRequest : IMeshDataAllocationRequest
         {
-            request.Verify();
-            CreateData(vertices: request.TriangleOrVertexCount, indices: 3 * request.TriangleOrVertexCount);
+            private readonly int _trianglesCount;
+            private readonly int _verticesCount;
+
+            public TriangleNotSameVertexAllocationRequest(int trianglesCount, int verticesCount)
+            {
+                Assert.IsTrue(trianglesCount > 0);
+                Assert.IsTrue(verticesCount > 0);
+                Assert.IsTrue(trianglesCount < verticesCount);
+                _trianglesCount = trianglesCount;
+                _verticesCount = verticesCount;
+            }
+
+            public MeshData Allocate() => new(vertices: _verticesCount, indices: 3 * _trianglesCount);
         }
 
-        public MeshData(TriangleNotSameVertexRequest request)
-        {
-            request.Verify();
-            CreateData(vertices: request.VerticesCount, indices: 3 * request.TrianglesCount);
-        }
+        public readonly Vector2[] Vertices;
+        public readonly ushort[] Indices;
+        public readonly Color[] TintColors;
 
-        private void CreateData(int vertices, int indices)
+        public MeshData(int vertices, int indices)
         {
             Vertices = new Vector2[vertices];
             Indices = new ushort[indices];

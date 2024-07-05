@@ -7,25 +7,27 @@ namespace Sxm.UIFactory
 {
     public static class UIElementsBuildOutput
     {
-        public class Result
+        public readonly struct Result
         {
-            public Vertex[] Vertices;
-            public ushort[] Indices;
-        }
+            public readonly Vertex[] Vertices;
+            public readonly ushort[] Indices;
 
-        public static IEnumerable<Result> GetDataForUIElements(this UIMeshFactory.CachedMeshInstance input) => input.Data.GetDataForUIElements();
-
-        private static IEnumerable<Result> GetDataForUIElements(this IEnumerable<MeshData> input)
-        {
-            return input.Select(mesh => new Result
+            public Result(Vertex[] vertices, ushort[] indices)
             {
-                Vertices = mesh.Vertices.Select((v, vIndex) => new Vertex
-                {
-                    position = new Vector3(v.x, v.y, Vertex.nearZ),
-                    tint = mesh.TintColors[vIndex]
-                }).ToArray(),
-                Indices = mesh.Indices
-            }).ToList();
+                Vertices = vertices;
+                Indices = indices;
+            }
         }
+
+        public static IEnumerable<Result> GetDataForUIElements(this UIFactoryManager.CookedMesh input) => input.Result.GetDataForUIElements();
+
+        private static IEnumerable<Result> GetDataForUIElements(this IEnumerable<MeshData> input) => input.Select(mesh => new Result(
+            vertices: mesh.Vertices.Select((v, vIndex) => new Vertex
+            {
+                position = new Vector3(v.x, v.y, Vertex.nearZ),
+                tint = mesh.TintColors[vIndex]
+            }).ToArray(),
+            indices: mesh.Indices
+        ));
     }
 }

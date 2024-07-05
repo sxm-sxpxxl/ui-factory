@@ -5,10 +5,12 @@ namespace Sxm.UIFactory.Components
 {
     internal static partial class MeshUtils
     {
-        public static void FillCircle(MeshData mesh, float radius, int resolution, Vector2 origin = default, Color color = default)
+        public static MeshData CreateCircleMesh(int resolution, float radius, Vector2 origin = default, Color color = default)
         {
-            SetVerticesOnCircumference(mesh.Vertices, radius, resolution, hasOriginPoint: true, origin);
-            mesh.TintColors = CreateColors(mesh.Vertices.Length, color);
+            var mesh = new MeshData.TriangleSameVertexAllocationRequest(triangleOrVertexCount: resolution + 1).Allocate();
+
+            FillVerticesOnCircumference(mesh.Vertices, radius, resolution, hasOriginPoint: true, origin);
+            FillTintColors(mesh.TintColors, color);
 
             var lastIndex = (ushort) (mesh.Vertices.Length - 1);
             for (ushort currentIndex = 0; currentIndex < mesh.Vertices.Length; currentIndex++)
@@ -19,18 +21,20 @@ namespace Sxm.UIFactory.Components
                 mesh.Indices[3 * currentIndex + 1] = nextIndex;
                 mesh.Indices[3 * currentIndex + 2] = lastIndex;
             }
+
+            return mesh;
         }
 
-        public static Vector2[] GetVerticesOnCircumference(float radius, int resolution, bool hasOriginPoint = false, Vector2 origin = default)
+        public static Vector2[] GetVerticesOnCircumference(bool hasOriginPoint, int resolution, float radius, Vector2 origin = default)
         {
             var verticesCount = resolution + (hasOriginPoint ? 1 : 0);
             var vertices = new Vector2[verticesCount];
 
-            SetVerticesOnCircumference(vertices, radius, resolution, hasOriginPoint, origin);
+            FillVerticesOnCircumference(vertices, radius, resolution, hasOriginPoint, origin);
             return vertices;
         }
 
-        private static void SetVerticesOnCircumference(IList<Vector2> vertices, float radius, int resolution, bool hasOriginPoint = false, Vector2 origin = default)
+        private static void FillVerticesOnCircumference(IList<Vector2> vertices, float radius, int resolution, bool hasOriginPoint = false, Vector2 origin = default)
         {
             var deltaInRad = 2f * Mathf.PI / resolution;
 

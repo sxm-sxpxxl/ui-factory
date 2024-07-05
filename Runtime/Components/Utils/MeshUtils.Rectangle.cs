@@ -12,7 +12,7 @@ namespace Sxm.UIFactory.Components
 
         private static readonly Quaternion OrthoRotation = Quaternion.Euler(90f * Vector3.forward);
 
-        public static void FillLine(MeshData mesh, Vector2 startPoint, Vector2 endPoint, float thickness, Color color = default)
+        public static MeshData CreateLineMesh(Vector2 startPoint, Vector2 endPoint, float thickness, Color color = default)
         {
             var lengthDirection = endPoint - startPoint;
             var widthDirection = ((Vector2) (OrthoRotation * lengthDirection)).normalized;
@@ -26,13 +26,15 @@ namespace Sxm.UIFactory.Components
             var worldSize = maxPoint - minPoint;
             var localSize = (Vector2) (Quaternion.Euler(-angleAroundOriginInDeg * Vector3.forward) * worldSize);
 
-            FillRectangle(mesh, localSize, origin, angleAroundOriginInDeg, color);
+            return CreateRectangleMesh(angleAroundOriginInDeg, localSize, origin, color);
         }
 
-        public static void FillRectangle(MeshData mesh, Vector2 size, Vector2 origin = default, float angleAroundOriginInDeg = 0f, Color color = default)
+        public static MeshData CreateRectangleMesh(float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color color = default)
         {
-            mesh.Vertices = GetVerticesOnRectangle(RectangleVerticesBuildOrder.CrissCross, size, origin, angleAroundOriginInDeg);
-            mesh.TintColors = CreateColors(mesh.Vertices.Length, color);
+            var mesh = new MeshData.QuadAllocationRequest(quadsCount: 1).Allocate();
+
+            FillVerticesOnRectangle(mesh.Vertices, RectangleVerticesBuildOrder.CrissCross, angleAroundOriginInDeg, size, origin);
+            FillTintColors(mesh.TintColors, color);
 
             mesh.Indices[0] = 0;
             mesh.Indices[1] = 2;
@@ -41,12 +43,20 @@ namespace Sxm.UIFactory.Components
             mesh.Indices[3] = 1;
             mesh.Indices[4] = 2;
             mesh.Indices[5] = 3;
+
+            return mesh;
         }
 
-        public static Vector2[] GetVerticesOnRectangle(RectangleVerticesBuildOrder buildOrder, Vector2 size, Vector2 origin = default, float angleAroundOriginInDeg = 0f)
+        public static Vector2[] GetVerticesOnRectangle(RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
+        {
+            var vertices = new Vector2[4];
+            FillVerticesOnRectangle(vertices, buildOrder, angleAroundOriginInDeg, size, origin);
+            return vertices;
+        }
+
+        private static void FillVerticesOnRectangle(Vector2[] vertices, RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
         {
             var extents = 0.5f * size;
-            var vertices = new Vector2[4];
 
             var v0 = new Vector2(-extents.x, -extents.y);
             var v1 = new Vector2(-extents.x, +extents.y);
@@ -64,15 +74,11 @@ namespace Sxm.UIFactory.Components
             vertices[1] = v1;
             vertices[2] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v2 : v3;
             vertices[3] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
-
-            return vertices;
         }
 
-        private static Color[] CreateColors(int count, Color defaultValue)
+        private static Color[] FillTintColors(Color[] colors, Color defaultValue)
         {
-            var colors = new Color[count];
-
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < colors.Length; i++)
             {
                 colors[i] = defaultValue;
             }

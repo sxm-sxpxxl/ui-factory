@@ -4,20 +4,29 @@ namespace Sxm.UIFactory.Components
 {
     internal static partial class MeshUtils
     {
-        public static void FillEquilateralTriangle(MeshData mesh, float size, Vector2 origin = default, float angleAroundOriginInDeg = 0f, Color color = default)
+        public static MeshData CreateEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default, Color color = default)
         {
-            mesh.Vertices = GetVerticesOnEquilateralTriangle(size, origin, angleAroundOriginInDeg);
-            mesh.TintColors = CreateColors(mesh.Vertices.Length, color);
+            var mesh = new MeshData.TriangleNotSameVertexAllocationRequest(trianglesCount: 1, verticesCount: 3).Allocate();
+
+            FillVerticesOnEquilateralTriangle(mesh.Vertices, angleAroundOriginInDeg, size, origin);
+            FillTintColors(mesh.TintColors, color);
 
             mesh.Indices[0] = 0;
             mesh.Indices[1] = 2;
             mesh.Indices[2] = 1;
+
+            return mesh;
         }
 
-        public static Vector2[] GetVerticesOnEquilateralTriangle(float size, Vector2 origin = default, float angleAroundOriginInDeg = 0f)
+        public static Vector2[] GetVerticesOnEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default)
         {
             var vertices = new Vector2[3];
+            FillVerticesOnEquilateralTriangle(new Vector2[3], angleAroundOriginInDeg, size, origin);
+            return vertices;
+        }
 
+        private static void FillVerticesOnEquilateralTriangle(Vector2[] vertices, float angleAroundOriginInDeg, float size, Vector2 origin = default)
+        {
             var directionToV0 = -(Vector2) (Quaternion.Euler(-60f * Vector3.forward) * Vector2.up);
             var directionToV1 = Vector2.up;
             var directionToV2 = -(Vector2) (Quaternion.Euler(60f * Vector3.forward) * Vector2.up);
@@ -32,8 +41,6 @@ namespace Sxm.UIFactory.Components
             vertices[0] = localToWorldMatrix.MultiplyPoint3x4(v0);
             vertices[1] = localToWorldMatrix.MultiplyPoint3x4(v1);
             vertices[2] = localToWorldMatrix.MultiplyPoint3x4(v2);
-
-            return vertices;
         }
     }
 }
