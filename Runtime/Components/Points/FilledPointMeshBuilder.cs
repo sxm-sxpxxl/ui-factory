@@ -6,7 +6,7 @@ namespace Sxm.UIFactory.Components.Points
 {
     public sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
     {
-        public override IEnumerable<MeshData> Build(FilledPointMeshDescription description)
+        protected override IEnumerable<MeshData> Build(FilledPointMeshDescription description)
         {
             yield return description.Shape switch
             {

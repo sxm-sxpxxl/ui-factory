@@ -6,21 +6,21 @@ namespace Sxm.UIFactory.Components.Series
 {
     public sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
     {
-        private Guid?[] _cachedLineIds;
+        private readonly List<MeshHandle> _lineHandles = new();
 
-        public override IEnumerable<MeshData> Build(LineSeriesMeshDescription description)
+        protected override IEnumerable<MeshData> Build(LineSeriesMeshDescription description)
         {
             if (description.Positions.Count == 0)
                 return Array.Empty<MeshData>();
 
             var linesCount = description.Positions.Count - (description.Closed ? 0 : 1);
-            if (_cachedLineIds == null || _cachedLineIds.Length != linesCount)
+
+            if (linesCount != _lineHandles.Count)
             {
-                // todo@sxm: maybe should use ArrayPool for best performance? But first need to evaluate the effectiveness of the solution with GC (#1)
-                _cachedLineIds = new Guid?[linesCount];
+                DisposeHandles();
             }
 
-            IEnumerable<MeshData> result = Array.Empty<MeshData>();
+            IEnumerable<MeshData> linesData = Array.Empty<MeshData>();
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
                 var isLastLine = currentPositionIndex == linesCount - 1;
@@ -39,11 +39,27 @@ namespace Sxm.UIFactory.Components.Series
                     EndPosition = endPosition - paddingOffset
                 };
 
-                var instance = UIFactoryManager.Build(lineDescription, _cachedLineIds[currentPositionIndex]).CacheAssignedMeshBuilderId(ref _cachedLineIds, sourceIndex: currentPositionIndex);
-                result = result.Concat(instance.Result);
+                if (currentPositionIndex == _lineHandles.Count)
+                {
+                    _lineHandles.Add(new MeshHandle());
+                }
+
+                var lineData = UIFactoryManager.Build(lineDescription, _lineHandles[currentPositionIndex]);
+                linesData = linesData.Concat(lineData);
             }
 
-            return result;
+            return linesData;
+        }
+
+        public override void Dispose()
+        {
+            DisposeHandles();
+        }
+
+        private void DisposeHandles()
+        {
+            _lineHandles.ForEach(handle => handle.Dispose());
+            _lineHandles.Clear();
         }
     }
 }

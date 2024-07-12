@@ -7,9 +7,9 @@ namespace Sxm.UIFactory.Components.Points
 {
     public sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
     {
-        private Guid? _cachedLineSeriesId;
+        private readonly MeshHandle _lineSeriesHandle = new();
 
-        public override IEnumerable<MeshData> Build(OutlinedPointMeshDescription description)
+        protected override IEnumerable<MeshData> Build(OutlinedPointMeshDescription description)
         {
             var vertices = description.Shape switch
             {
@@ -27,8 +27,12 @@ namespace Sxm.UIFactory.Components.Points
                 ForceBuild: description.ForceBuild
             );
 
-            var instance = UIFactoryManager.Build(lineSeriesDescription, _cachedLineSeriesId).CacheAssignedMeshBuilderId(ref _cachedLineSeriesId);
-            return instance.Result;
+            return UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+        }
+
+        public override void Dispose()
+        {
+            _lineSeriesHandle.Dispose();
         }
     }
 }

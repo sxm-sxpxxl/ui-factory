@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sxm.UIFactory.Components.Series;
 using UnityEngine;
 
@@ -7,9 +6,9 @@ namespace Sxm.UIFactory.Components.Lines
 {
     public sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
     {
-        private Guid? _cachedLineSeriesId;
+        private readonly MeshHandle _lineSeriesHandle = new();
 
-        public override IEnumerable<MeshData> Build(DashLineMeshDescription description)
+        protected override IEnumerable<MeshData> Build(DashLineMeshDescription description)
         {
             var dashWidth = description.DashWidth;
             var dashGap = description.DashGap;
@@ -35,8 +34,12 @@ namespace Sxm.UIFactory.Components.Lines
                 ForceBuild: description.ForceBuild
             );
 
-            var instance = UIFactoryManager.Build(lineSeriesDescription, _cachedLineSeriesId).CacheAssignedMeshBuilderId(ref _cachedLineSeriesId);
-            return instance.Result;
+            return UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+        }
+
+        public override void Dispose()
+        {
+            _lineSeriesHandle.Dispose();
         }
     }
 }

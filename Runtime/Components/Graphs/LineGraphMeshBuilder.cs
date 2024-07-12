@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Sxm.UIFactory.Components.Series;
 
@@ -7,10 +6,10 @@ namespace Sxm.UIFactory.Components
 {
     public sealed class LineGraphMeshBuilder : MeshBuilder<LineGraphMeshDescription>
     {
-        private Guid? _cachedLineSeriesId;
-        private Guid? _cachedPointSeriesId;
+        private readonly MeshHandle _lineSeriesHandle = new();
+        private readonly MeshHandle _pointSeriesHandle = new();
 
-        public override IEnumerable<MeshData> Build(LineGraphMeshDescription description)
+        protected override IEnumerable<MeshData> Build(LineGraphMeshDescription description)
         {
             var lineSeriesDescription = new LineSeriesMeshDescription(
                 Line: description.Line,
@@ -26,10 +25,16 @@ namespace Sxm.UIFactory.Components
                 ForceBuild: description.ForceBuild
             );
 
-            var lineSeriesInstance = UIFactoryManager.Build(lineSeriesDescription, _cachedLineSeriesId);
-            var pointSeriesInstance = UIFactoryManager.Build(pointSeriesDescription, _cachedPointSeriesId);
+            var lineSeriesData = UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+            var pointSeriesData = UIFactoryManager.Build(pointSeriesDescription, _pointSeriesHandle);
 
-            return lineSeriesInstance.Result.Concat(pointSeriesInstance.Result);
+            return lineSeriesData.Concat(pointSeriesData);
+        }
+
+        public override void Dispose()
+        {
+            _lineSeriesHandle.Dispose();
+            _pointSeriesHandle.Dispose();
         }
     }
 }

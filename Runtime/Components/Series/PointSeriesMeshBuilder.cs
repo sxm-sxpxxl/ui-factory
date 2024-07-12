@@ -6,34 +6,49 @@ namespace Sxm.UIFactory.Components.Series
 {
     public sealed class PointSeriesMeshBuilder : MeshBuilder<PointSeriesMeshDescription>
     {
-        private Guid?[] _cachedPointIds;
+        private readonly List<MeshHandle> _pointHandles = new();
 
-        public override IEnumerable<MeshData> Build(PointSeriesMeshDescription description)
+        protected override IEnumerable<MeshData> Build(PointSeriesMeshDescription description)
         {
             if (description.Positions.Count == 0)
                 return Array.Empty<MeshData>();
 
-
-            if (_cachedPointIds == null || _cachedPointIds.Length != description.Positions.Count)
+            if (description.Positions.Count != _pointHandles.Count)
             {
-                // todo@sxm: maybe should use ArrayPool for best performance? But first need to evaluate the effectiveness of the solution with GC (#2)
-                _cachedPointIds = new Guid?[description.Positions.Count];
+                DisposeHandles();
             }
 
-            IEnumerable<MeshData> result = Array.Empty<MeshData>();
-            for (var positionIndex = 0; positionIndex < description.Positions.Count; positionIndex++)
+            IEnumerable<MeshData> pointsData = Array.Empty<MeshData>();
+            for (var currentPositionIndex = 0; currentPositionIndex < description.Positions.Count; currentPositionIndex++)
             {
+                var position = description.Positions[currentPositionIndex];
                 var pointDescription = description.Point with
                 {
                     ForceBuild = description.ForceBuild || description.Point.ForceBuild,
-                    Origin = description.Positions[positionIndex]
+                    Origin = position
                 };
 
-                var instance = UIFactoryManager.Build(pointDescription, _cachedPointIds[positionIndex]).CacheAssignedMeshBuilderId(ref _cachedPointIds, sourceIndex: positionIndex);
-                result = result.Concat(instance.Result);
+                if (currentPositionIndex == _pointHandles.Count)
+                {
+                    _pointHandles.Add(new MeshHandle());
+                }
+
+                var pointData = UIFactoryManager.Build(pointDescription, _pointHandles[currentPositionIndex]);
+                pointsData = pointsData.Concat(pointData);
             }
 
-            return result;
+            return pointsData;
+        }
+
+        public override void Dispose()
+        {
+            DisposeHandles();
+        }
+
+        private void DisposeHandles()
+        {
+            _pointHandles.ForEach(handle => handle.Dispose());
+            _pointHandles.Clear();
         }
     }
 }

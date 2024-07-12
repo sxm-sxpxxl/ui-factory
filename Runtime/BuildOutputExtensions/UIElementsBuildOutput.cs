@@ -45,8 +45,9 @@ namespace Sxm.UIFactory
             }
         }
 
-        public static IEnumerable<UIElementsResult> GetUIElementsResults(this UIFactoryManager.CookedMesh input) => input.Result.GetUIElementsResults();
-
-        private static IEnumerable<UIElementsResult> GetUIElementsResults(this IEnumerable<MeshData> input) => input.Select(mesh => new UIElementsResult(mesh.Vertices, mesh.TintColors, mesh.Indices));
+        public static IEnumerable<UIElementsResult> GetUIElementsResults(this IEnumerable<MeshData> input)
+        {
+            return input.Select(mesh => new UIElementsResult(mesh.Vertices, mesh.TintColors, mesh.Indices));
+        }
     }
 }
