@@ -2,7 +2,7 @@
 
 namespace Sxm.UIFactory.Components.Lines
 {
-    public sealed class SolidLineMeshBuilder : MeshBuilder<SolidLineMeshDescription>
+    internal sealed class SolidLineMeshBuilder : MeshBuilder<SolidLineMeshDescription>
     {
         // todo@sxm: add description validators through attributes?
         protected override IEnumerable<MeshData> Build(SolidLineMeshDescription description)

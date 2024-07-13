@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Sxm.UIFactory.Components.Points
 {
-    public sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
+    internal sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
     {
         private readonly MeshHandle _lineSeriesHandle = new();
 

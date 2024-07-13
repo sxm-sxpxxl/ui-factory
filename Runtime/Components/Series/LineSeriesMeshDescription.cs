@@ -22,6 +22,6 @@ namespace Sxm.UIFactory.Components.Series
         {
         }
 
-        public override IMeshBuilder ConstructBuilder() => new LineSeriesMeshBuilder();
+        internal override IMeshBuilder ConstructBuilder() => new LineSeriesMeshBuilder();
     }
 }

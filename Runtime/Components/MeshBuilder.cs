@@ -2,7 +2,7 @@
 
 namespace Sxm.UIFactory.Components
 {
-    public abstract class MeshBuilder<T> : IMeshBuilder where T : MeshDescription
+    internal abstract class MeshBuilder<T> : IMeshBuilder where T : MeshDescription
     {
         protected abstract IEnumerable<MeshData> Build(T description);
 

@@ -3,7 +3,7 @@ using Sxm.UIFactory.Components.Lines;
 using Sxm.UIFactory.Components.Points;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components
+namespace Sxm.UIFactory.Components.Graphs
 {
     public sealed record LineGraphMeshDescription(
         IList<Vector2> Positions,
@@ -21,6 +21,6 @@ namespace Sxm.UIFactory.Components
         {
         }
 
-        public override IMeshBuilder ConstructBuilder() => new LineGraphMeshBuilder();
+        internal override IMeshBuilder ConstructBuilder() => new LineGraphMeshBuilder();
     }
 }

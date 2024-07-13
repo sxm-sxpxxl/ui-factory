@@ -10,7 +10,7 @@ namespace Sxm.UIFactory
             MeshData Allocate();
         }
 
-        public readonly struct QuadAllocationRequest : IMeshDataAllocationRequest
+        internal readonly struct QuadAllocationRequest : IMeshDataAllocationRequest
         {
             private readonly int _quadsCount;
 
@@ -23,7 +23,7 @@ namespace Sxm.UIFactory
             public MeshData Allocate() => new(vertices: 4 * _quadsCount, indices: 6 * _quadsCount);
         }
 
-        public readonly struct TriangleSameVertexAllocationRequest : IMeshDataAllocationRequest
+        internal readonly struct TriangleSameVertexAllocationRequest : IMeshDataAllocationRequest
         {
             private readonly int _triangleOrVertexCount;
 
@@ -36,7 +36,7 @@ namespace Sxm.UIFactory
             public MeshData Allocate() => new(vertices: _triangleOrVertexCount, indices: 3 * _triangleOrVertexCount);
         }
 
-        public readonly struct TriangleNotSameVertexAllocationRequest : IMeshDataAllocationRequest
+        internal readonly struct TriangleNotSameVertexAllocationRequest : IMeshDataAllocationRequest
         {
             private readonly int _trianglesCount;
             private readonly int _verticesCount;
@@ -57,7 +57,7 @@ namespace Sxm.UIFactory
         public readonly ushort[] Indices;
         public readonly Color[] TintColors;
 
-        public MeshData(int vertices, int indices)
+        private MeshData(int vertices, int indices)
         {
             Vertices = new Vector2[vertices];
             Indices = new ushort[indices];

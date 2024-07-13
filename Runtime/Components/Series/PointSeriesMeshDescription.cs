@@ -18,6 +18,6 @@ namespace Sxm.UIFactory.Components.Series
         {
         }
 
-        public override IMeshBuilder ConstructBuilder() => new PointSeriesMeshBuilder();
+        internal override IMeshBuilder ConstructBuilder() => new PointSeriesMeshBuilder();
     }
 }

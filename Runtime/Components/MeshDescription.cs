@@ -2,6 +2,6 @@
 {
     public abstract record MeshDescription(bool ForceBuild = default)
     {
-        public abstract IMeshBuilder ConstructBuilder();
+        internal abstract IMeshBuilder ConstructBuilder();
     }
 }

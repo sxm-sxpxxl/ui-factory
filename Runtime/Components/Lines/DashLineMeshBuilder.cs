@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Sxm.UIFactory.Components.Lines
 {
-    public sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
+    internal sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
     {
         private readonly MeshHandle _lineSeriesHandle = new();
 

@@ -5,18 +5,18 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sxm.UIFactory
+namespace Sxm.UIFactory.MeshDataAdapters
 {
-    public static class UIElementsBuildOutput
+    public static class UIElementsMeshDataAdapter
     {
-        public readonly struct UIElementsResult : IDisposable
+        public readonly struct MeshResult : IDisposable
         {
             public readonly Vertex[] Vertices;
             public readonly ushort[] Indices;
 
             private readonly ArrayPool<Vertex> _verticesPool;
 
-            public UIElementsResult(Vector2[] vertices, Color[] tintColors, ushort[] indices)
+            public MeshResult(Vector2[] vertices, Color[] tintColors, ushort[] indices)
             {
                 (Vertices, _verticesPool) = GetVertices(vertices, tintColors);
                 Indices = indices;
@@ -45,9 +45,9 @@ namespace Sxm.UIFactory
             }
         }
 
-        public static IEnumerable<UIElementsResult> GetUIElementsResults(this IEnumerable<MeshData> input)
+        public static IEnumerable<MeshResult> GetResults(this IEnumerable<MeshData> input)
         {
-            return input.Select(mesh => new UIElementsResult(mesh.Vertices, mesh.TintColors, mesh.Indices));
+            return input.Select(mesh => new MeshResult(mesh.Vertices, mesh.TintColors, mesh.Indices));
         }
     }
 }

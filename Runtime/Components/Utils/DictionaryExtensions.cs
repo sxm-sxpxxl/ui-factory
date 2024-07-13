@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Sxm.UIFactory.Components
 {
-    public static class DictionaryExtensions
+    internal static class DictionaryExtensions
     {
         public static T Get<T>(this IDictionary<string, object> rawData, string key)
         {

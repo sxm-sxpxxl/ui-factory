@@ -2,9 +2,9 @@
 using System.Linq;
 using Sxm.UIFactory.Components.Series;
 
-namespace Sxm.UIFactory.Components
+namespace Sxm.UIFactory.Components.Graphs
 {
-    public sealed class LineGraphMeshBuilder : MeshBuilder<LineGraphMeshDescription>
+    internal sealed class LineGraphMeshBuilder : MeshBuilder<LineGraphMeshDescription>
     {
         private readonly MeshHandle _lineSeriesHandle = new();
         private readonly MeshHandle _pointSeriesHandle = new();

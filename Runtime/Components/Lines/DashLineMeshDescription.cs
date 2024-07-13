@@ -25,6 +25,6 @@ namespace Sxm.UIFactory.Components.Lines
         {
         }
 
-        public override IMeshBuilder ConstructBuilder() => new DashLineMeshBuilder();
+        internal override IMeshBuilder ConstructBuilder() => new DashLineMeshBuilder();
     }
 }

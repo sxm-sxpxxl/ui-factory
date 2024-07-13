@@ -22,6 +22,6 @@ namespace Sxm.UIFactory.Components.Points
         {
         }
 
-        public override IMeshBuilder ConstructBuilder() => new OutlinedPointMeshBuilder();
+        internal override IMeshBuilder ConstructBuilder() => new OutlinedPointMeshBuilder();
     }
 }

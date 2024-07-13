@@ -2,7 +2,7 @@
 
 namespace Sxm.UIFactory.Components
 {
-    public sealed class CachedMeshBuilder : MeshBuilder<MeshDescription>
+    internal sealed class CachedMeshBuilder : MeshBuilder<MeshDescription>
     {
         private readonly IMeshBuilder _meshBuilder;
         private (MeshDescription description, IEnumerable<MeshData> meshData) _cached;
@@ -23,7 +23,7 @@ namespace Sxm.UIFactory.Components
             return meshData;
         }
 
-        private bool IsCachedDescriptionChanged(MeshDescription description) => _cached.description == null || !description.Equals(description);
+        private bool IsCachedDescriptionChanged(MeshDescription description) => _cached.description == null || !_cached.description.Equals(description);
 
         public override void Dispose() => _meshBuilder.Dispose();
     }

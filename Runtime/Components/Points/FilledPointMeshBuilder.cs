@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Sxm.UIFactory.Components.Points
 {
-    public sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
+    internal sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
     {
         protected override IEnumerable<MeshData> Build(FilledPointMeshDescription description)
         {

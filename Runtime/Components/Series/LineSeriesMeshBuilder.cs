@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Sxm.UIFactory.Components.Series
 {
-    public sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
+    internal sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
     {
         private readonly List<MeshHandle> _lineHandles = new();
 

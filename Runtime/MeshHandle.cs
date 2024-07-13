@@ -5,23 +5,33 @@ namespace Sxm.UIFactory
 {
     public sealed class MeshHandle : IDisposable
     {
-        private MeshDescription _description;
+        private Type _descriptionType;
+        private MeshBuilderPool _pool;
         private IMeshBuilder _builder;
 
-        public IMeshBuilder GetMeshBuilder(MeshDescription description)
+        internal IMeshBuilder GetMeshBuilder(MeshBuilderPool pool, Type descriptionType)
         {
-            if (_description == null || _description.GetType() != description.GetType())
+            if (_descriptionType == null || _descriptionType != descriptionType)
             {
-                _builder = new CachedMeshBuilder(description.ConstructBuilder());
+                ReleaseBuilder();
+                _builder = pool.Get();
             }
 
-            _description = description;
+            _pool = pool;
+            _descriptionType = descriptionType;
+
             return _builder;
+        }
+
+        private void ReleaseBuilder()
+        {
+            _builder?.Dispose();
+            _pool?.Release(_builder);
         }
 
         public void Dispose()
         {
-            _builder?.Dispose();
+            ReleaseBuilder();
         }
     }
 }

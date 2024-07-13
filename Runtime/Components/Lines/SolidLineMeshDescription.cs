@@ -21,6 +21,6 @@ namespace Sxm.UIFactory.Components.Lines
         {
         }
 
-        public override IMeshBuilder ConstructBuilder() => new SolidLineMeshBuilder();
+        internal override IMeshBuilder ConstructBuilder() => new SolidLineMeshBuilder();
     }
 }
