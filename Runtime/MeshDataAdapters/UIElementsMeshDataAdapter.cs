@@ -9,7 +9,7 @@ namespace Sxm.UIFactory.MeshDataAdapters
 {
     public static class UIElementsMeshDataAdapter
     {
-        public readonly struct MeshResult : IDisposable
+        private readonly struct MeshResult : IDisposable
         {
             public readonly Vertex[] Vertices;
             public readonly ushort[] Indices;
@@ -45,9 +45,17 @@ namespace Sxm.UIFactory.MeshDataAdapters
             }
         }
 
-        public static IEnumerable<MeshResult> GetResults(this IEnumerable<MeshData> input)
+        public static void SetData(this MeshGenerationContext context, IEnumerable<MeshData> data)
         {
-            return input.Select(mesh => new MeshResult(mesh.Vertices, mesh.TintColors, mesh.Indices));
+            foreach (var result in data.Select(mesh => new MeshResult(mesh.Vertices, mesh.TintColors, mesh.Indices)))
+            {
+                using (result)
+                {
+                    var meshWriteData = context.Allocate(result.Vertices.Length, result.Indices.Length);
+                    meshWriteData.SetAllVertices(result.Vertices);
+                    meshWriteData.SetAllIndices(result.Indices);
+                }
+            }
         }
     }
 }
