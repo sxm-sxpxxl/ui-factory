@@ -1,3 +1,4 @@
+[![Package Version](https://img.shields.io/badge/version-1.0.1-coral)](https://github.com/sxm-sxpxxl/parallax-effect/blob/master/LICENSE.md)
 [![Unity Version](https://img.shields.io/badge/unity-2020.3%2B-blue)](https://unity3d.com/get-unity/download)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/sxm-sxpxxl/parallax-effect/blob/master/LICENSE.md)
 
