@@ -32,6 +32,8 @@ Factory of various UI components, from primitives (line, point) to complex objec
 ### Install via UPM (using Git URL)
 Please add the following line to the manifest file (`Packages/manifest.json`) to the `dependencies` section:
 
-```"com.sxm.ui-factory": "https://github.com/sxm-sxpxxl/ui-factory.git"```
+```
+"com.sxm.ui-factory": "https://github.com/sxm-sxpxxl/ui-factory.git"
+```
 
 or just download and unzip the repository into the `Packages` folder.
