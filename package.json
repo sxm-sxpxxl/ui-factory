@@ -1,6 +1,6 @@
 {
   "name": "com.sxm.ui-factory",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "UI Factory",
   "description": "Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to uGUI and UIElements formats.",
   "unity": "2020.3",

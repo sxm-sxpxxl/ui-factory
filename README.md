@@ -1,5 +1,5 @@
-[![Package Version](https://img.shields.io/badge/version-1.0.1-coral)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#how-to-install)
-[![Unity Version](https://img.shields.io/badge/unity-2020.3%2B-blue)](https://unity3d.com/get-unity/download)
+[![openupm](https://img.shields.io/npm/v/com.sxm.ui-factory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.sxm.ui-factory/)
+[![Unity Version](https://img.shields.io/badge/unity-2020.3%2B-coral)](https://unity3d.com/get-unity/download)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/sxm-sxpxxl/ui-factory/blob/master/LICENSE.md)
 
 <p align="left">
@@ -8,7 +8,7 @@
 
 ## About
 
-Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to UIElements format (uGUI in plans).
+Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to UIElements format.
 
 ## Supported UI components
 
@@ -29,7 +29,14 @@ Factory of various UI components, from primitives (line, point) to complex objec
 - [x] Graph
 
 ## How To Install
-### Install via UPM (using Git URL)
+### Install via OpenUPM
+The package is available on the [openupm registry](https://openupm.com/). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+
+```
+openupm add com.sxm.ui-factory
+```
+
+### Install via Git URL
 Please add the following line to the manifest file (`Packages/manifest.json`) to the `dependencies` section:
 
 ```
