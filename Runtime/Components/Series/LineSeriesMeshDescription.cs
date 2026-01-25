@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Sxm.UIFactory.Components.Series
 {
     public sealed record LineSeriesMeshDescription(
-        LineMeshDescription Line,
+        SolidLineMeshDescription Line,
         float Padding,
         bool Closed,
         IList<Vector2> Positions,
@@ -13,7 +13,7 @@ namespace Sxm.UIFactory.Components.Series
     ) : SeriesMeshDescription(Positions, ForceBuild)
     {
         public LineSeriesMeshDescription(IDictionary<string, object> rawData) : this(
-            rawData.Get<LineMeshDescription>("line"),
+            rawData.Get<SolidLineMeshDescription>("line"),
             rawData.Get<float>("padding"),
             rawData.Get<bool>("closed"),
             rawData.Get<IList<Vector2>>("positions"),
