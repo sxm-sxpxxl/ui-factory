@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Sxm.UIFactory.Components.Points
 {
     public sealed record OutlinedPointMeshDescription(
-        LineMeshDescription Outline,
+        SolidLineMeshDescription Outline,
         float Size,
         PointShape Shape,
         Vector2 Origin = default,
@@ -13,7 +13,7 @@ namespace Sxm.UIFactory.Components.Points
     ) : PointMeshDescription(Size, Shape, Origin, ForceBuild)
     {
         public OutlinedPointMeshDescription(IDictionary<string, object> rawData) : this(
-            rawData.Get<LineMeshDescription>("outline"),
+            rawData.Get<SolidLineMeshDescription>("outline"),
             rawData.Get<float>("size"),
             rawData.Get<PointShape>("shape"),
             rawData.GetOrDefault<Vector2>("origin", default),

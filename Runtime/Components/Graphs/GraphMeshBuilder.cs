@@ -4,12 +4,12 @@ using Sxm.UIFactory.Components.Series;
 
 namespace Sxm.UIFactory.Components.Graphs
 {
-    internal sealed class LineGraphMeshBuilder : MeshBuilder<LineGraphMeshDescription>
+    internal sealed class GraphMeshBuilder : MeshBuilder<GraphMeshDescription>
     {
         private readonly MeshHandle _lineSeriesHandle = new();
         private readonly MeshHandle _pointSeriesHandle = new();
 
-        protected override IEnumerable<MeshData> Build(LineGraphMeshDescription description)
+        protected override IEnumerable<MeshData> Build(GraphMeshDescription description)
         {
             var lineSeriesDescription = new LineSeriesMeshDescription(
                 Line: description.Line,
