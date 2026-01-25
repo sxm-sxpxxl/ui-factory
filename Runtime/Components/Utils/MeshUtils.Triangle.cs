@@ -21,7 +21,7 @@ namespace Sxm.UIFactory.Components
         public static Vector2[] GetVerticesOnEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default)
         {
             var vertices = new Vector2[3];
-            FillVerticesOnEquilateralTriangle(new Vector2[3], angleAroundOriginInDeg, size, origin);
+            FillVerticesOnEquilateralTriangle(vertices, angleAroundOriginInDeg, size, origin);
             return vertices;
         }
 
