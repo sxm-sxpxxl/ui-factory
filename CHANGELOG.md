@@ -1,5 +1,9 @@
 # UI Factory
 
+## [2.1.0] - 2026-01-25
+
+- Added optional points creation for Graph
+
 ## [2.0.1] - 2026-01-25
 
 - Fixed Outlined/Triangle mesh creation

@@ -18,14 +18,16 @@ namespace Sxm.UIFactory.Components.Graphs
                 Positions: description.Positions,
                 ForceBuild: description.ForceBuild
             );
+            var lineSeriesData = UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+
+            if (description.Point == null)
+                return lineSeriesData;
 
             var pointSeriesDescription = new PointSeriesMeshDescription(
                 Point: description.Point,
                 Positions: description.Positions,
                 ForceBuild: description.ForceBuild
             );
-
-            var lineSeriesData = UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
             var pointSeriesData = UIFactoryManager.Build(pointSeriesDescription, _pointSeriesHandle);
 
             return lineSeriesData.Concat(pointSeriesData);
