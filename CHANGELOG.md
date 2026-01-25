@@ -1,5 +1,9 @@
 # UI Factory
 
+## [2.0.1] - 2026-01-25
+
+- Fixed Outlined/Triangle mesh creation
+
 ## [2.0.0] - 2026-01-25
 
 - Removed dash line support for graph
