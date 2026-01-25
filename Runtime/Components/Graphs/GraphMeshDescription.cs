@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using Sxm.UIFactory.Components.Lines;
 using Sxm.UIFactory.Components.Points;
 using UnityEngine;
@@ -8,14 +9,14 @@ namespace Sxm.UIFactory.Components.Graphs
     public sealed record GraphMeshDescription(
         IList<Vector2> Positions,
         SolidLineMeshDescription Line,
-        PointMeshDescription Point,
+        [CanBeNull] PointMeshDescription Point = default,
         bool ForceBuild = default
     ) : MeshDescription(ForceBuild)
     {
         public GraphMeshDescription(IDictionary<string, object> rawData) : this(
             rawData.Get<IList<Vector2>>("positions"),
             rawData.Get<SolidLineMeshDescription>("line"),
-            rawData.Get<PointMeshDescription>("point"),
+            rawData.GetOrDefault<PointMeshDescription>("point", default),
             rawData.GetOrDefault<bool>("force_build", default)
         )
         {
