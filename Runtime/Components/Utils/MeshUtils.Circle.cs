@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components
+namespace SxmTools.UIFactory.Components
 {
     internal static partial class MeshUtils
     {

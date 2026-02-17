@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Sxm.UIFactory.Components.Series;
+using SxmTools.UIFactory.Components.Series;
 
-namespace Sxm.UIFactory.Components.Graphs
+namespace SxmTools.UIFactory.Components.Graphs
 {
     internal sealed class GraphMeshBuilder : MeshBuilder<GraphMeshDescription>
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sxm.UIFactory.Components.Series;
+using SxmTools.UIFactory.Components.Series;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Points
+namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
     {

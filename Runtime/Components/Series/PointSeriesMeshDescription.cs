@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Sxm.UIFactory.Components.Points;
+using SxmTools.UIFactory.Components.Points;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Series
+namespace SxmTools.UIFactory.Components.Series
 {
     public sealed record PointSeriesMeshDescription(
         PointMeshDescription Point,

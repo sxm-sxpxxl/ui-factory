@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Lines
+namespace SxmTools.UIFactory.Components.Lines
 {
     public sealed record SolidLineMeshDescription(
         int Thickness,

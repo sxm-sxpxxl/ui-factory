@@ -1,4 +1,4 @@
-﻿namespace Sxm.UIFactory.Components.Points
+﻿namespace SxmTools.UIFactory.Components.Points
 {
     public enum PointShape
     {

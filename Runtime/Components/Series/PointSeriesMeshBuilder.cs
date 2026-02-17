@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sxm.UIFactory.Components.Series
+namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class PointSeriesMeshBuilder : MeshBuilder<PointSeriesMeshDescription>
     {

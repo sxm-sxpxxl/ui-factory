@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sxm.UIFactory.Components
+namespace SxmTools.UIFactory.Components
 {
     internal abstract class MeshBuilder<T> : IMeshBuilder where T : MeshDescription
     {

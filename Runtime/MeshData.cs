@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Sxm.UIFactory
+namespace SxmTools.UIFactory
 {
     public readonly struct MeshData
     {

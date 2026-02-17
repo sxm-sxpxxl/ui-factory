@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using Sxm.UIFactory.Components.Lines;
-using Sxm.UIFactory.Components.Points;
+using SxmTools.UIFactory.Components.Lines;
+using SxmTools.UIFactory.Components.Points;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Graphs
+namespace SxmTools.UIFactory.Components.Graphs
 {
     public sealed record GraphMeshDescription(
         IList<Vector2> Positions,

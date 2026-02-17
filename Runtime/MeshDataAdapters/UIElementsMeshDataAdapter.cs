@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Sxm.UIFactory.MeshDataAdapters
+namespace SxmTools.UIFactory.MeshDataAdapters
 {
     public static class UIElementsMeshDataAdapter
     {

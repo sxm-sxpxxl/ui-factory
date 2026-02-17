@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Sxm.UIFactory.Components.Lines;
+using SxmTools.UIFactory.Components.Lines;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Series
+namespace SxmTools.UIFactory.Components.Series
 {
     public sealed record LineSeriesMeshDescription(
         SolidLineMeshDescription Line,

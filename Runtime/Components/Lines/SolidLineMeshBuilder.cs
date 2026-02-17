@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Sxm.UIFactory.Components.Lines
+namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class SolidLineMeshBuilder : MeshBuilder<SolidLineMeshDescription>
     {
