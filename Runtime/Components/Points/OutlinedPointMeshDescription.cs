@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Sxm.UIFactory.Components.Lines;
+using SxmTools.UIFactory.Components.Lines;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Points
+namespace SxmTools.UIFactory.Components.Points
 {
     public sealed record OutlinedPointMeshDescription(
         SolidLineMeshDescription Outline,

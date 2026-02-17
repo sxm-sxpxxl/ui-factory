@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Lines
+namespace SxmTools.UIFactory.Components.Lines
 {
     public abstract record LineMeshDescription(int Thickness, Color Color, Vector2 StartPosition = default, Vector2 EndPosition = default, bool ForceBuild = default) : MeshDescription(ForceBuild)
     {

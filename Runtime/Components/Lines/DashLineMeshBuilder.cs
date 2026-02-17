@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Sxm.UIFactory.Components.Series;
+using SxmTools.UIFactory.Components.Series;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Lines
+namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
     {

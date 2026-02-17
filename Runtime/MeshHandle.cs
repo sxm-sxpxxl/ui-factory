@@ -1,7 +1,7 @@
 ﻿using System;
-using Sxm.UIFactory.Components;
+using SxmTools.UIFactory.Components;
 
-namespace Sxm.UIFactory
+namespace SxmTools.UIFactory
 {
     public sealed class MeshHandle : IDisposable
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Sxm.UIFactory.Components;
+using SxmTools.UIFactory.Components;
 
-namespace Sxm.UIFactory
+namespace SxmTools.UIFactory
 {
     public static class UIFactoryManager
     {

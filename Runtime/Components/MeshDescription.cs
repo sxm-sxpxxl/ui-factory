@@ -1,4 +1,4 @@
-﻿namespace Sxm.UIFactory.Components
+﻿namespace SxmTools.UIFactory.Components
 {
     public abstract record MeshDescription(bool ForceBuild = default)
     {

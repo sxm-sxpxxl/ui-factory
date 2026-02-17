@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Sxm.UIFactory.Components;
+using SxmTools.UIFactory.Components;
 using UnityEngine.Pool;
 
-namespace Sxm.UIFactory
+namespace SxmTools.UIFactory
 {
     internal sealed class MeshBuilderPool : IObjectPool<IMeshBuilder>
     {

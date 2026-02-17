@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Points
+namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
     {

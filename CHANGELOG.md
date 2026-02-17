@@ -1,5 +1,9 @@
 # UI Factory
 
+## [3.0.0] - 2026-02-18
+
+- Changed namespace from `Sxm.UIFactory` to `SxmTools.UIFactory`
+
 ## [2.1.1] - 2026-01-25
 
 - Removed redundant comments from code

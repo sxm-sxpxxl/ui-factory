@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sxm.UIFactory.Components
+namespace SxmTools.UIFactory.Components
 {
     internal interface IMeshBuilder : IDisposable
     {

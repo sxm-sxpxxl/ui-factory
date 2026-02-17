@@ -1,6 +1,6 @@
 {
     "name": "UIFactory.Runtime",
-    "rootNamespace": "Sxm.UIFactory",
+    "rootNamespace": "SxmTools.UIFactory",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

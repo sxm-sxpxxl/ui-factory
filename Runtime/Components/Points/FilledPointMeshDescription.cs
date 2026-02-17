@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sxm.UIFactory.Components.Points
+namespace SxmTools.UIFactory.Components.Points
 {
     public sealed record FilledPointMeshDescription(
         Color Color,
