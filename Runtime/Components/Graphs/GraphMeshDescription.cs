@@ -10,6 +10,7 @@ namespace SxmTools.UIFactory.Components.Graphs
         IList<Vector2> Positions,
         SolidLineMeshDescription Line,
         [CanBeNull] PointMeshDescription Point = default,
+        [CanBeNull] HashSet<int> IgnoredPointIndices = default,
         bool ForceBuild = default
     ) : MeshDescription(ForceBuild)
     {
@@ -17,6 +18,7 @@ namespace SxmTools.UIFactory.Components.Graphs
             rawData.Get<IList<Vector2>>("positions"),
             rawData.Get<SolidLineMeshDescription>("line"),
             rawData.GetOrDefault<PointMeshDescription>("point", default),
+            rawData.GetOrDefault<HashSet<int>>("ignored_point_indices", default),
             rawData.GetOrDefault<bool>("force_build", default)
         )
         {
