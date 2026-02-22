@@ -26,6 +26,7 @@ namespace SxmTools.UIFactory.Components.Graphs
             var pointSeriesDescription = new PointSeriesMeshDescription(
                 Point: description.Point,
                 Positions: description.Positions,
+                IgnoredPointIndices: description.IgnoredPointIndices,
                 ForceBuild: description.ForceBuild
             );
             var pointSeriesData = UIFactoryManager.Build(pointSeriesDescription, _pointSeriesHandle);

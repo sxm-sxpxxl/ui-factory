@@ -1,5 +1,9 @@
 # UI Factory
 
+## [3.1.0] - 2026-02-23
+
+- Added ignore point rendering by position indices
+
 ## [3.0.0] - 2026-02-18
 
 - Changed namespace from `Sxm.UIFactory` to `SxmTools.UIFactory`

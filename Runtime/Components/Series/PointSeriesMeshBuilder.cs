@@ -10,30 +10,35 @@ namespace SxmTools.UIFactory.Components.Series
 
         protected override IEnumerable<MeshData> Build(PointSeriesMeshDescription description)
         {
-            if (description.Positions.Count == 0)
+            var positionsCount = description.Positions.Count;
+
+            if (positionsCount == 0)
                 return Array.Empty<MeshData>();
 
-            if (description.Positions.Count != _pointHandles.Count)
+            if (positionsCount != _pointHandles.Count)
             {
                 DisposeHandles();
             }
 
             IEnumerable<MeshData> pointsData = Array.Empty<MeshData>();
-            for (var currentPositionIndex = 0; currentPositionIndex < description.Positions.Count; currentPositionIndex++)
+            for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
-                var position = description.Positions[currentPositionIndex];
+                if (positionIndex == _pointHandles.Count)
+                {
+                    _pointHandles.Add(new MeshHandle());
+                }
+
+                if (description.IgnoredPointIndices != null && description.IgnoredPointIndices.Contains(positionIndex))
+                    continue;
+
+                var position = description.Positions[positionIndex];
                 var pointDescription = description.Point with
                 {
                     ForceBuild = description.ForceBuild || description.Point.ForceBuild,
                     Origin = position
                 };
 
-                if (currentPositionIndex == _pointHandles.Count)
-                {
-                    _pointHandles.Add(new MeshHandle());
-                }
-
-                var pointData = UIFactoryManager.Build(pointDescription, _pointHandles[currentPositionIndex]);
+                var pointData = UIFactoryManager.Build(pointDescription, _pointHandles[positionIndex]);
                 pointsData = pointsData.Concat(pointData);
             }
 
