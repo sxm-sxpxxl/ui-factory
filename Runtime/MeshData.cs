@@ -1,5 +1,5 @@
-using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory
 {
@@ -53,15 +53,13 @@ namespace SxmTools.UIFactory
             public MeshData Allocate() => new(vertices: _verticesCount, indices: 3 * _trianglesCount);
         }
 
-        public readonly Vector2[] Vertices;
+        public readonly Vertex[] Vertices;
         public readonly ushort[] Indices;
-        public readonly Color[] TintColors;
 
         private MeshData(int vertices, int indices)
         {
-            Vertices = new Vector2[vertices];
+            Vertices = new Vertex[vertices];
             Indices = new ushort[indices];
-            TintColors = new Color[vertices];
         }
     }
 }

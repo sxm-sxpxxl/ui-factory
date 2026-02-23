@@ -5,6 +5,6 @@ namespace SxmTools.UIFactory.Components
 {
     internal interface IMeshBuilder : IDisposable
     {
-        IEnumerable<MeshData> Build(object description);
+        IReadOnlyList<MeshData> Build(object description);
     }
 }

@@ -7,7 +7,7 @@ namespace SxmTools.UIFactory.Components.Lines
         float DashWidth,
         float DashGap,
         int Thickness,
-        Color Color,
+        Color32 Color,
         Vector2 StartPosition = default,
         Vector2 EndPosition = default,
         bool ForceBuild = default
@@ -17,7 +17,7 @@ namespace SxmTools.UIFactory.Components.Lines
             rawData.Get<float>("dash_width"),
             rawData.Get<float>("dash_gap"),
             rawData.Get<int>("thickness"),
-            rawData.Get<Color>("color"),
+            rawData.Get<Color32>("color"),
             rawData.GetOrDefault<Vector2>("start_position", default),
             rawData.GetOrDefault<Vector2>("end_position", default),
             rawData.GetOrDefault<bool>("force_build", default)

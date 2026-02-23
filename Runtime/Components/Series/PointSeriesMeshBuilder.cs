@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class PointSeriesMeshBuilder : MeshBuilder<PointSeriesMeshDescription>
     {
         private readonly List<MeshHandle> _pointHandles = new();
+        private List<MeshData> _result;
 
-        protected override IEnumerable<MeshData> Build(PointSeriesMeshDescription description)
+        protected override IReadOnlyList<MeshData> Build(PointSeriesMeshDescription description)
         {
             var positionsCount = description.Positions.Count;
 
@@ -19,6 +19,8 @@ namespace SxmTools.UIFactory.Components.Series
             {
                 DisposeHandles();
             }
+            _result ??= new List<MeshData>(capacity: positionsCount);
+            _result.Clear();
 
             IEnumerable<MeshData> pointsData = Array.Empty<MeshData>();
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
@@ -38,11 +40,11 @@ namespace SxmTools.UIFactory.Components.Series
                     Origin = position
                 };
 
-                var pointData = UIFactoryManager.Build(pointDescription, _pointHandles[positionIndex]);
-                pointsData = pointsData.Concat(pointData);
+                var meshData = UIFactoryManager.Build(pointDescription, _pointHandles[positionIndex]);
+                _result.AddRange(meshData);
             }
 
-            return pointsData;
+            return _result;
         }
 
         public override void Dispose()

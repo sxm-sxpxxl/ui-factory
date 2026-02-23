@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SxmTools.UIFactory.Components.Points
 {
     public sealed record FilledPointMeshDescription(
-        Color Color,
+        Color32 Color,
         float Size,
         PointShape Shape,
         Vector2 Origin = default,
@@ -12,7 +12,7 @@ namespace SxmTools.UIFactory.Components.Points
     ) : PointMeshDescription(Size, Shape, Origin, ForceBuild)
     {
         public FilledPointMeshDescription(IDictionary<string, object> rawData) : this(
-            rawData.Get<Color>("color"),
+            rawData.Get<Color32>("color"),
             rawData.Get<float>("size"),
             rawData.Get<PointShape>("shape"),
             rawData.GetOrDefault<Vector2>("origin", default),

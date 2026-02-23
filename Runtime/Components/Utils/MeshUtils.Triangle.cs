@@ -1,15 +1,16 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory.Components
 {
     internal static partial class MeshUtils
     {
-        public static MeshData CreateEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default, Color color = default)
+        public static MeshData CreateEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default, Color32 color = default)
         {
             var mesh = new MeshData.TriangleNotSameVertexAllocationRequest(trianglesCount: 1, verticesCount: 3).Allocate();
 
             FillVerticesOnEquilateralTriangle(mesh.Vertices, angleAroundOriginInDeg, size, origin);
-            FillTintColors(mesh.TintColors, color);
+            FillTintColors(mesh.Vertices, color);
 
             mesh.Indices[0] = 0;
             mesh.Indices[1] = 2;
@@ -23,6 +24,24 @@ namespace SxmTools.UIFactory.Components
             var vertices = new Vector2[3];
             FillVerticesOnEquilateralTriangle(vertices, angleAroundOriginInDeg, size, origin);
             return vertices;
+        }
+
+        private static void FillVerticesOnEquilateralTriangle(Vertex[] vertices, float angleAroundOriginInDeg, float size, Vector2 origin = default)
+        {
+            var directionToV0 = -(Vector2) (Quaternion.Euler(-60f * Vector3.forward) * Vector2.up);
+            var directionToV1 = Vector2.up;
+            var directionToV2 = -(Vector2) (Quaternion.Euler(60f * Vector3.forward) * Vector2.up);
+
+            var circumscribedCircleRadius = size * Mathf.Sqrt(3f) / 3f;
+            var v0 = circumscribedCircleRadius * directionToV0;
+            var v1 = circumscribedCircleRadius * directionToV1;
+            var v2 = circumscribedCircleRadius * directionToV2;
+
+            var localToWorldMatrix = Matrix4x4.TRS(origin, Quaternion.Euler(angleAroundOriginInDeg * Vector3.forward), Vector3.one);
+
+            vertices[0].position = localToWorldMatrix.MultiplyPoint3x4(v0);
+            vertices[1].position = localToWorldMatrix.MultiplyPoint3x4(v1);
+            vertices[2].position = localToWorldMatrix.MultiplyPoint3x4(v2);
         }
 
         private static void FillVerticesOnEquilateralTriangle(Vector2[] vertices, float angleAroundOriginInDeg, float size, Vector2 origin = default)

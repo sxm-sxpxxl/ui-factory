@@ -1,5 +1,9 @@
 # UI Factory
 
+## [3.1.1] - 2026-02-23
+
+- Optimization of graph mesh data creation
+
 ## [3.1.0] - 2026-02-23
 
 - Added ignore point rendering by position indices

@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
     {
         private readonly List<MeshHandle> _lineHandles = new();
+        private List<MeshData> _result;
 
-        protected override IEnumerable<MeshData> Build(LineSeriesMeshDescription description)
+        protected override IReadOnlyList<MeshData> Build(LineSeriesMeshDescription description)
         {
             if (description.Positions.Count == 0)
                 return Array.Empty<MeshData>();
 
             var linesCount = description.Positions.Count - (description.Closed ? 0 : 1);
-
             if (linesCount != _lineHandles.Count)
             {
                 DisposeHandles();
             }
+            _result ??= new List<MeshData>(capacity: linesCount);
+            _result.Clear();
 
-            IEnumerable<MeshData> linesData = Array.Empty<MeshData>();
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
                 var isLastLine = currentPositionIndex == linesCount - 1;
@@ -44,11 +44,11 @@ namespace SxmTools.UIFactory.Components.Series
                     _lineHandles.Add(new MeshHandle());
                 }
 
-                var lineData = UIFactoryManager.Build(lineDescription, _lineHandles[currentPositionIndex]);
-                linesData = linesData.Concat(lineData);
+                var meshData = UIFactoryManager.Build(lineDescription, _lineHandles[currentPositionIndex]);
+                _result.AddRange(meshData);
             }
 
-            return linesData;
+            return _result;
         }
 
         public override void Dispose()
