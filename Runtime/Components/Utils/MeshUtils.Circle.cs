@@ -15,7 +15,7 @@ namespace SxmTools.UIFactory.Components
             var lastIndex = (ushort) (mesh.Vertices.Length - 1);
             for (ushort currentIndex = 0; currentIndex < mesh.Vertices.Length; currentIndex++)
             {
-                var nextIndex = (ushort) Mathf.Repeat(currentIndex + 1, lastIndex);
+                var nextIndex = (ushort) ((currentIndex + 1) % lastIndex);
 
                 mesh.Indices[3 * currentIndex + 0] = currentIndex;
                 mesh.Indices[3 * currentIndex + 1] = nextIndex;
