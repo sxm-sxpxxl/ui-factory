@@ -5,7 +5,7 @@ namespace SxmTools.UIFactory.Components.Lines
 {
     public sealed record SolidLineMeshDescription(
         int Thickness,
-        Color Color,
+        Color32 Color,
         Vector2 StartPosition = default,
         Vector2 EndPosition = default,
         bool ForceBuild = default
@@ -13,7 +13,7 @@ namespace SxmTools.UIFactory.Components.Lines
     {
         public SolidLineMeshDescription(IDictionary<string, object> rawData) : this(
             rawData.Get<int>("thickness"),
-            rawData.Get<Color>("color"),
+            rawData.Get<Color32>("color"),
             rawData.GetOrDefault<Vector2>("start_position", default),
             rawData.GetOrDefault<Vector2>("end_position", default),
             rawData.GetOrDefault<bool>("force_build", default)
