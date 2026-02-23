@@ -13,7 +13,7 @@ namespace SxmTools.UIFactory
         /// </summary>
         /// <param name="description">Description of a mesh</param>
         /// <returns>A sequence of mesh data representing its different parts</returns>
-        public static IEnumerable<MeshData> Build(MeshDescription description)
+        public static IReadOnlyList<MeshData> Build(MeshDescription description)
         {
             using var handle = new MeshHandle();
             return Build(description, handle);
@@ -25,7 +25,7 @@ namespace SxmTools.UIFactory
         /// <param name="description">Description of a mesh</param>
         /// <param name="handle">Handle for caching a previous result</param>
         /// <returns>A sequence of mesh data representing its different parts</returns>
-        public static IEnumerable<MeshData> Build(MeshDescription description, MeshHandle handle)
+        public static IReadOnlyList<MeshData> Build(MeshDescription description, MeshHandle handle)
         {
             var descriptionType = description.GetType();
 

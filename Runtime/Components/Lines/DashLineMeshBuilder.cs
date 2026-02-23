@@ -8,7 +8,7 @@ namespace SxmTools.UIFactory.Components.Lines
     {
         private readonly MeshHandle _lineSeriesHandle = new();
 
-        protected override IEnumerable<MeshData> Build(DashLineMeshDescription description)
+        protected override IReadOnlyList<MeshData> Build(DashLineMeshDescription description)
         {
             var dashWidth = description.DashWidth;
             var dashGap = description.DashGap;

@@ -4,9 +4,12 @@ namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class SolidLineMeshBuilder : MeshBuilder<SolidLineMeshDescription>
     {
-        protected override IEnumerable<MeshData> Build(SolidLineMeshDescription description)
+        private readonly List<MeshData> _result = new(capacity: 1) {default};
+
+        protected override IReadOnlyList<MeshData> Build(SolidLineMeshDescription description)
         {
-            yield return MeshUtils.CreateLineMesh(description.StartPosition, description.EndPosition, description.Thickness, description.Color);
+            _result[0] = MeshUtils.CreateLineMesh(description.StartPosition, description.EndPosition, description.Thickness, description.Color);
+            return _result;
         }
     }
 }

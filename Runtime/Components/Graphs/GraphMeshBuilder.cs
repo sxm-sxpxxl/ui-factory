@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SxmTools.UIFactory.Components.Series;
 
 namespace SxmTools.UIFactory.Components.Graphs
@@ -9,7 +8,7 @@ namespace SxmTools.UIFactory.Components.Graphs
         private readonly MeshHandle _lineSeriesHandle = new();
         private readonly MeshHandle _pointSeriesHandle = new();
 
-        protected override IEnumerable<MeshData> Build(GraphMeshDescription description)
+        protected override IReadOnlyList<MeshData> Build(GraphMeshDescription description)
         {
             var lineSeriesDescription = new LineSeriesMeshDescription(
                 Line: description.Line,
@@ -31,7 +30,8 @@ namespace SxmTools.UIFactory.Components.Graphs
             );
             var pointSeriesData = UIFactoryManager.Build(pointSeriesDescription, _pointSeriesHandle);
 
-            return lineSeriesData.Concat(pointSeriesData);
+            ((List<MeshData>) lineSeriesData).AddRange(pointSeriesData);
+            return lineSeriesData;
         }
 
         public override void Dispose()

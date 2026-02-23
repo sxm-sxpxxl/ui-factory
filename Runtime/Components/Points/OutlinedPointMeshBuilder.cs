@@ -9,7 +9,7 @@ namespace SxmTools.UIFactory.Components.Points
     {
         private readonly MeshHandle _lineSeriesHandle = new();
 
-        protected override IEnumerable<MeshData> Build(OutlinedPointMeshDescription description)
+        protected override IReadOnlyList<MeshData> Build(OutlinedPointMeshDescription description)
         {
             var vertices = description.Shape switch
             {
