@@ -1,9 +1,14 @@
+using System;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory.Components
 {
-    internal static partial class MeshUtils
+    public static partial class MeshUtils
     {
         public enum RectangleVerticesBuildOrder
         {
@@ -32,81 +37,151 @@ namespace SxmTools.UIFactory.Components
 
         public static MeshData CreateRectangleMesh(float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
         {
-            var mesh = new MeshData.QuadAllocationRequest(quadsCount: 1).Allocate();
+            var meshData = MeshData.AllocateQuad(quadsCount: 1);
 
-            FillVerticesOnRectangle(mesh.Vertices, RectangleVerticesBuildOrder.CrissCross, angleAroundOriginInDeg, size, origin);
-            FillTintColors(mesh.Vertices, color);
+            // var extents = 0.5f * size;
+            //
+            // var v0 = new Vector2(-extents.x, -extents.y);
+            // var v1 = new Vector2(-extents.x, +extents.y);
+            // var v2 = new Vector2(+extents.x, -extents.y);
+            // var v3 = new Vector2(+extents.x, +extents.y);
+            //
+            // var localToWorldMatrix = Matrix4x4.TRS(origin, Quaternion.Euler(angleAroundOriginInDeg * Vector3.forward), Vector3.one);
+            //
+            // v0 = localToWorldMatrix.MultiplyPoint3x4(v0);
+            // v1 = localToWorldMatrix.MultiplyPoint3x4(v1);
+            // v2 = localToWorldMatrix.MultiplyPoint3x4(v2);
+            // v3 = localToWorldMatrix.MultiplyPoint3x4(v3);
+            //
+            // vertices[0].position = v0;
+            // vertices[1].position = v1;
+            // vertices[2].position = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v2 : v3;
+            // vertices[3].position = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
 
-            mesh.Indices[0] = 0;
-            mesh.Indices[1] = 2;
-            mesh.Indices[2] = 1;
-
-            mesh.Indices[3] = 1;
-            mesh.Indices[4] = 2;
-            mesh.Indices[5] = 3;
-
-            return mesh;
+            RectangleBurstProcedures.FillRectangle(ref meshData.Vertices, ref meshData.Indices, size, origin, angleAroundOriginInDeg, color, true);
+            return meshData;
         }
 
-        public static Vector2[] GetVerticesOnRectangle(RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
+        public static Vector2[] RentVerticesOnRectangle(RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
         {
-            var vertices = new Vector2[4];
-            FillVerticesOnRectangle(vertices, buildOrder, angleAroundOriginInDeg, size, origin);
-            return vertices;
+            var rentedVertices = Pool.Rent(4);
+
+            var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
+#if UNITY_EDITOR
+            NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
+#endif
+
+            // var extents = 0.5f * size;
+            //
+            // var v0 = new Vector2(-extents.x, -extents.y);
+            // var v1 = new Vector2(-extents.x, +extents.y);
+            // var v2 = new Vector2(+extents.x, -extents.y);
+            // var v3 = new Vector2(+extents.x, +extents.y);
+            //
+            // var localToWorldMatrix = Matrix4x4.TRS(origin, Quaternion.Euler(angleAroundOriginInDeg * Vector3.forward), Vector3.one);
+            //
+            // v0 = localToWorldMatrix.MultiplyPoint3x4(v0);
+            // v1 = localToWorldMatrix.MultiplyPoint3x4(v1);
+            // v2 = localToWorldMatrix.MultiplyPoint3x4(v2);
+            // v3 = localToWorldMatrix.MultiplyPoint3x4(v3);
+            //
+            // vertices[0] = v0;
+            // vertices[1] = v1;
+            // vertices[2] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v2 : v3;
+            // vertices[3] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
+
+            RectangleBurstProcedures.FillRectangle(ref nativeVertices, size, origin, angleAroundOriginInDeg, buildOrder is RectangleVerticesBuildOrder.CrissCross);
+            return rentedVertices;
         }
+    }
 
-        private static void FillVerticesOnRectangle(Vertex[] vertices, RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
+    [BurstCompile]
+    public static class RectangleBurstProcedures
+    {
+        [BurstCompile]
+        public static void FillRectangle(
+            ref NativeArray<Vertex> vertices, 
+            ref NativeArray<ushort> indices,
+            in float2 size, 
+            in float2 origin, 
+            float angleDeg, 
+            in Color32 color,
+            bool isCrissCross
+        )
         {
-            var extents = 0.5f * size;
+            float2 extents = 0.5f * size;
 
-            var v0 = new Vector2(-extents.x, -extents.y);
-            var v1 = new Vector2(-extents.x, +extents.y);
-            var v2 = new Vector2(+extents.x, -extents.y);
-            var v3 = new Vector2(+extents.x, +extents.y);
+            float2 v0 = new float2(-extents.x, -extents.y);
+            float2 v1 = new float2(-extents.x,  extents.y);
+            float2 v2 = new float2( extents.x, -extents.y);
+            float2 v3 = new float2( extents.x,  extents.y);
 
-            var localToWorldMatrix = Matrix4x4.TRS(origin, Quaternion.Euler(angleAroundOriginInDeg * Vector3.forward), Vector3.one);
+            float4x4 matrix = float4x4.TRS(
+                new float3(origin.x, origin.y, 0f),
+                quaternion.EulerXYZ(0f, 0f, math.radians(angleDeg)),
+                new float3(1f, 1f, 1f)
+            );
 
-            v0 = localToWorldMatrix.MultiplyPoint3x4(v0);
-            v1 = localToWorldMatrix.MultiplyPoint3x4(v1);
-            v2 = localToWorldMatrix.MultiplyPoint3x4(v2);
-            v3 = localToWorldMatrix.MultiplyPoint3x4(v3);
+            vertices[0] = CreateVertex(matrix, v0, color);
+            vertices[1] = CreateVertex(matrix, v1, color);
+        
+            vertices[2] = CreateVertex(matrix, isCrissCross ? v2 : v3, color);
+            vertices[3] = CreateVertex(matrix, isCrissCross ? v3 : v2, color);
 
-            vertices[0].position = v0;
-            vertices[1].position = v1;
-            vertices[2].position = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v2 : v3;
-            vertices[3].position = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
-        }
+            indices[0] = 0;
+            indices[1] = 2;
+            indices[2] = 1;
 
-        private static void FillVerticesOnRectangle(Vector2[] vertices, RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
-        {
-            var extents = 0.5f * size;
+            indices[3] = 1;
+            indices[4] = 2;
+            indices[5] = 3;
+            return;
 
-            var v0 = new Vector2(-extents.x, -extents.y);
-            var v1 = new Vector2(-extents.x, +extents.y);
-            var v2 = new Vector2(+extents.x, -extents.y);
-            var v3 = new Vector2(+extents.x, +extents.y);
-
-            var localToWorldMatrix = Matrix4x4.TRS(origin, Quaternion.Euler(angleAroundOriginInDeg * Vector3.forward), Vector3.one);
-
-            v0 = localToWorldMatrix.MultiplyPoint3x4(v0);
-            v1 = localToWorldMatrix.MultiplyPoint3x4(v1);
-            v2 = localToWorldMatrix.MultiplyPoint3x4(v2);
-            v3 = localToWorldMatrix.MultiplyPoint3x4(v3);
-
-            vertices[0] = v0;
-            vertices[1] = v1;
-            vertices[2] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v2 : v3;
-            vertices[3] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
-        }
-
-        private static Vertex[] FillTintColors(Vertex[] vertices, Color32 tint)
-        {
-            for (var i = 0; i < vertices.Length; i++)
+            static Vertex CreateVertex(float4x4 mat, float2 localPos, Color32 color)
             {
-                vertices[i].tint = tint;
+                float4 worldPos = math.mul(mat, new float4(localPos.x, localPos.y, 0f, 1f));
+                return new Vertex 
+                { 
+                    position = new Vector3(worldPos.x, worldPos.y, worldPos.z), 
+                    tint = color 
+                };
             }
+        }
 
-            return vertices;
+        [BurstCompile]
+        public static void FillRectangle(
+            ref NativeArray<Vector2> vertices, 
+            in float2 size, 
+            in float2 origin, 
+            float angleDeg, 
+            bool isCrissCross
+        )
+        {
+            float2 extents = 0.5f * size;
+
+            float2 v0 = new float2(-extents.x, -extents.y);
+            float2 v1 = new float2(-extents.x,  extents.y);
+            float2 v2 = new float2( extents.x, -extents.y);
+            float2 v3 = new float2( extents.x,  extents.y);
+
+            float4x4 matrix = float4x4.TRS(
+                new float3(origin.x, origin.y, 0f),
+                quaternion.EulerXYZ(0f, 0f, math.radians(angleDeg)),
+                new float3(1f, 1f, 1f)
+            );
+
+            vertices[0] = CreateVertex(matrix, v0);
+            vertices[1] = CreateVertex(matrix, v1);
+        
+            vertices[2] = CreateVertex(matrix, isCrissCross ? v2 : v3);
+            vertices[3] = CreateVertex(matrix, isCrissCross ? v3 : v2);
+            return;
+
+            static Vector2 CreateVertex(float4x4 mat, float2 localPos)
+            {
+                float4 worldPos = math.mul(mat, new float4(localPos.x, localPos.y, 0f, 1f));
+                return new Vector2(worldPos.x, worldPos.y);
+            }
         }
     }
 }

@@ -1,69 +1,131 @@
+using System;
+using System.Buffers;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory.Components
 {
-    internal static partial class MeshUtils
+    public static partial class MeshUtils
     {
+        private static readonly ArrayPool<Vector2> Pool = ArrayPool<Vector2>.Shared;
+
         public static MeshData CreateCircleMesh(int resolution, float radius, Vector2 origin = default, Color32 color = default)
         {
-            var mesh = new MeshData.TriangleSameVertexAllocationRequest(triangleOrVertexCount: resolution + 1).Allocate();
+            var mesh = MeshData.AllocateTriangleSameVertex(triangleOrVertexCount: resolution + 1);
 
-            FillVerticesOnCircumference(mesh.Vertices, radius, resolution, hasOriginPoint: true, origin);
-            FillTintColors(mesh.Vertices, color);
+            // for (var i = 0; i < resolution; i++)
+            // {
+            //     var t = i * deltaInRad;
+            //     var x = radius * Mathf.Cos(t);
+            //     var y = radius * Mathf.Sin(t);
+            //
+            //     vertices[i].position = origin + new Vector2(x, y);
+            // }
 
-            var lastIndex = (ushort) (mesh.Vertices.Length - 1);
-            for (ushort currentIndex = 0; currentIndex < mesh.Vertices.Length; currentIndex++)
-            {
-                var nextIndex = (ushort) ((currentIndex + 1) % lastIndex);
-
-                mesh.Indices[3 * currentIndex + 0] = currentIndex;
-                mesh.Indices[3 * currentIndex + 1] = nextIndex;
-                mesh.Indices[3 * currentIndex + 2] = lastIndex;
-            }
-
+            CircleBurstProcedures.FillCircumference(ref mesh.Vertices, ref mesh.Indices, radius, resolution, origin, color);
             return mesh;
         }
 
-        public static Vector2[] GetVerticesOnCircumference(bool hasOriginPoint, int resolution, float radius, Vector2 origin = default)
+        public static Vector2[] RentVerticesOnCircumference(bool hasOriginPoint, int resolution, float radius, Vector2 origin = default)
         {
             var verticesCount = resolution + (hasOriginPoint ? 1 : 0);
-            var vertices = new Vector2[verticesCount];
+            var rentedVertices = Pool.Rent(verticesCount);
 
-            FillVerticesOnCircumference(vertices, radius, resolution, hasOriginPoint, origin);
-            return vertices;
+            var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
+#if UNITY_EDITOR
+            NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
+#endif
+
+            // var deltaInRad = 2f * Mathf.PI / resolution;
+            //
+            // for (var i = 0; i < resolution; i++)
+            // {
+            //     var t = i * deltaInRad;
+            //     var x = radius * Mathf.Cos(t);
+            //     var y = radius * Mathf.Sin(t);
+            //
+            //     vertices[i] = origin + new Vector2(x, y);
+            // }
+            //
+            // if (hasOriginPoint)
+            // {
+            //     vertices[resolution] = origin;
+            // }
+
+            CircleBurstProcedures.FillCircumference(ref nativeVertices, radius, resolution, origin, hasOriginPoint);
+            return rentedVertices;
         }
 
-        private static void FillVerticesOnCircumference(Vertex[] vertices, float radius, int resolution, bool hasOriginPoint = false, Vector2 origin = default)
+        public static void ReturnVertices(Vector2[] rentedVertices)
         {
-            var deltaInRad = 2f * Mathf.PI / resolution;
+            Pool.Return(rentedVertices);
+        }
+    }
 
-            for (var i = 0; i < resolution; i++)
+    [BurstCompile]
+    public static class CircleBurstProcedures
+    {
+        [BurstCompile]
+        public static void FillCircumference(
+            ref NativeArray<Vertex> vertices,
+            ref NativeArray<ushort> indices,
+            float radius,
+            int resolution,
+            in float2 origin,
+            in Color32 color
+        )
+        {
+            float deltaInRad = (2f * math.PI) / resolution;
+            ushort last = (ushort) resolution;
+
+            for (int i = 0; i < resolution; i++)
             {
-                var t = i * deltaInRad;
-                var x = radius * Mathf.Cos(t);
-                var y = radius * Mathf.Sin(t);
+                float t = i * deltaInRad;
+                math.sincos(t, out float sin, out float cos);
 
-                vertices[i].position = origin + new Vector2(x, y);
+                vertices[i] = new Vertex
+                {
+                    position = new Vector3(origin.x + (cos * radius), origin.y + (sin * radius), 0f),
+                    tint = color
+                };
+
+                ushort curr = (ushort) i;
+                ushort next = (ushort) ((i + 1) % resolution);
+
+                int baseIdx = i * 3;
+                indices[baseIdx + 0] = curr;
+                indices[baseIdx + 1] = next;
+                indices[baseIdx + 2] = last;
             }
 
-            if (hasOriginPoint)
+            vertices[last] = new Vertex
             {
-                vertices[resolution].position = origin;
-            }
+                position = new Vector3(origin.x, origin.y, 0f),
+                tint = color
+            };
         }
 
-        private static void FillVerticesOnCircumference(Vector2[] vertices, float radius, int resolution, bool hasOriginPoint = false, Vector2 origin = default)
+        [BurstCompile]
+        public static void FillCircumference(
+            ref NativeArray<Vector2> vertices,
+            float radius,
+            int resolution,
+            in float2 origin,
+            bool hasOriginPoint
+        )
         {
-            var deltaInRad = 2f * Mathf.PI / resolution;
+            float deltaInRad = (2f * math.PI) / resolution;
 
-            for (var i = 0; i < resolution; i++)
+            for (int i = 0; i < resolution; i++)
             {
-                var t = i * deltaInRad;
-                var x = radius * Mathf.Cos(t);
-                var y = radius * Mathf.Sin(t);
+                float t = i * deltaInRad;
+                math.sincos(t, out float sin, out float cos);
 
-                vertices[i] = origin + new Vector2(x, y);
+                vertices[i] = new Vector2(origin.x + (cos * radius), origin.y + (sin * radius));
             }
 
             if (hasOriginPoint)

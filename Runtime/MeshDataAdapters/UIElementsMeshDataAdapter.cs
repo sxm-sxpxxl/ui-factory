@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory.MeshDataAdapters
@@ -12,8 +13,8 @@ namespace SxmTools.UIFactory.MeshDataAdapters
                 var meshData = data[index];
                 var meshWriteData = context.Allocate(meshData.Vertices.Length, meshData.Indices.Length);
 
-                meshWriteData.SetAllVertices(meshData.Vertices);
-                meshWriteData.SetAllIndices(meshData.Indices);
+                meshWriteData.SetAllVertices(meshData.Vertices.Slice());
+                meshWriteData.SetAllIndices(meshData.Indices.Slice());
             }
         }
     }
