@@ -12,18 +12,19 @@ namespace SxmTools.UIFactory.Components
             _meshBuilder = meshBuilder;
         }
 
+        public override void Init() => _meshBuilder.Init();
+
         protected override IReadOnlyList<MeshData> Build(MeshDescription description)
         {
-            if (!IsCachedDescriptionChanged(description) && !description.ForceBuild)
+            if (!IsCachedDescriptionChanged() && !description.ForceBuild)
                 return _cached.meshData;
 
             var meshData = _meshBuilder.Build(description);
             _cached = (description, meshData);
 
             return meshData;
+            bool IsCachedDescriptionChanged() => _cached.description == null || !_cached.description.Equals(description);
         }
-
-        private bool IsCachedDescriptionChanged(MeshDescription description) => _cached.description == null || !_cached.description.Equals(description);
 
         public override void Dispose() => _meshBuilder.Dispose();
     }

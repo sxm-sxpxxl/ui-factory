@@ -18,7 +18,8 @@ namespace SxmTools.UIFactory.Components
 
         private static readonly Quaternion OrthoRotation = Quaternion.Euler(90f * Vector3.forward);
 
-        public static MeshData CreateLineMesh(Vector2 startPoint, Vector2 endPoint, float thickness, Color32 color = default)
+        // todo@sxm: тоже перевести на burst-compile
+        public static void CreateLineMesh(MeshData data, Vector2 startPoint, Vector2 endPoint, float thickness, Color32 color = default)
         {
             var lengthDirection = endPoint - startPoint;
             var widthDirection = ((Vector2) (OrthoRotation * lengthDirection)).normalized;
@@ -32,13 +33,11 @@ namespace SxmTools.UIFactory.Components
             var worldSize = maxPoint - minPoint;
             var localSize = (Vector2) (Quaternion.Euler(-angleAroundOriginInDeg * Vector3.forward) * worldSize);
 
-            return CreateRectangleMesh(angleAroundOriginInDeg, localSize, origin, color);
+            CreateRectangleMesh(data, angleAroundOriginInDeg, localSize, origin, color);
         }
 
-        public static MeshData CreateRectangleMesh(float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
+        public static void CreateRectangleMesh(MeshData data, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
         {
-            var meshData = MeshData.AllocateQuad(quadsCount: 1);
-
             // var extents = 0.5f * size;
             //
             // var v0 = new Vector2(-extents.x, -extents.y);
@@ -58,18 +57,18 @@ namespace SxmTools.UIFactory.Components
             // vertices[2].position = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v2 : v3;
             // vertices[3].position = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
 
-            RectangleBurstProcedures.FillRectangle(ref meshData.Vertices, ref meshData.Indices, size, origin, angleAroundOriginInDeg, color, true);
-            return meshData;
+            RectangleBurstProcedures.FillRectangle(ref data.Vertices, ref data.Indices, size, origin, angleAroundOriginInDeg, color, true);
         }
 
         public static Vector2[] RentVerticesOnRectangle(RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
         {
-            var rentedVertices = Pool.Rent(4);
-
-            var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
-#if UNITY_EDITOR
-            NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
-#endif
+//             var rentedVertices = Pool.Rent(4);
+//
+//             var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
+// #if UNITY_EDITOR
+//             NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
+// #endif
+            var nativeVertices = new NativeArray<Vector2>(4, Allocator.Temp);
 
             // var extents = 0.5f * size;
             //
@@ -91,6 +90,9 @@ namespace SxmTools.UIFactory.Components
             // vertices[3] = buildOrder == RectangleVerticesBuildOrder.CrissCross ? v3 : v2;
 
             RectangleBurstProcedures.FillRectangle(ref nativeVertices, size, origin, angleAroundOriginInDeg, buildOrder is RectangleVerticesBuildOrder.CrissCross);
+            var rentedVertices = nativeVertices.ToArray();
+            nativeVertices.Dispose();
+
             return rentedVertices;
         }
     }

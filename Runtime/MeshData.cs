@@ -1,11 +1,12 @@
 using Unity.Collections;
-using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory
 {
     public struct MeshData
     {
+        public const int CircleResolution = 32;
+
         public NativeArray<Vertex> Vertices;
         public NativeArray<ushort> Indices;
 
@@ -21,23 +22,13 @@ namespace SxmTools.UIFactory
             Indices.Dispose();
         }
 
-        public static MeshData AllocateQuad(int quadsCount)
-        {
-            Assert.IsTrue(quadsCount > 0);
-            return new MeshData(vertices: 4 * quadsCount, indices: 6 * quadsCount);
-        }
+        public static MeshData AllocateQuad() => new(vertices: 4, indices: 6);
 
-        public static MeshData AllocateTriangleNotSameVertex(int trianglesCount, int verticesCount)
-        {
-            Assert.IsTrue(trianglesCount > 0);
-            Assert.IsTrue(verticesCount > 0);
-            Assert.IsTrue(trianglesCount < verticesCount);
-            return new MeshData(vertices: verticesCount, indices: 3 * trianglesCount);
-        }
+        public static MeshData AllocateTriangle() => new(vertices: 3, indices: 3);
 
-        public static MeshData AllocateTriangleSameVertex(int triangleOrVertexCount)
+        public static MeshData AllocateCircle()
         {
-            Assert.IsTrue(triangleOrVertexCount > 0);
+            const int triangleOrVertexCount = CircleResolution + 1;
             return new MeshData(vertices: triangleOrVertexCount, indices: 3 * triangleOrVertexCount);
         }
     }

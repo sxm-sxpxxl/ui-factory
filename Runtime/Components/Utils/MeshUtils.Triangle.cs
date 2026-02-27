@@ -10,10 +10,8 @@ namespace SxmTools.UIFactory.Components
 {
     public static partial class MeshUtils
     {
-        public static MeshData CreateEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default, Color32 color = default)
+        public static void CreateEquilateralTriangle(MeshData data, float angleAroundOriginInDeg, float size, Vector2 origin = default, Color32 color = default)
         {
-            var meshData = MeshData.AllocateTriangleNotSameVertex(trianglesCount: 1, verticesCount: 3);
-
             // var directionToV0 = -(Vector2) (Quaternion.Euler(-60f * Vector3.forward) * Vector2.up);
             // var directionToV1 = Vector2.up;
             // var directionToV2 = -(Vector2) (Quaternion.Euler(60f * Vector3.forward) * Vector2.up);
@@ -29,19 +27,19 @@ namespace SxmTools.UIFactory.Components
             // vertices[1].position = localToWorldMatrix.MultiplyPoint3x4(v1);
             // vertices[2].position = localToWorldMatrix.MultiplyPoint3x4(v2);
 
-            TriangleBurstProcedures.FillEquilateralTriangle(ref meshData.Vertices, ref meshData.Indices, size, origin, angleAroundOriginInDeg, color);
-            return meshData;
+            TriangleBurstProcedures.FillEquilateralTriangle(ref data.Vertices, ref data.Indices, size, origin, angleAroundOriginInDeg, color);
         }
 
         public static Vector2[] RentVerticesOnEquilateralTriangle(float angleAroundOriginInDeg, float size, Vector2 origin = default)
         {
-            var rentedVertices = Pool.Rent(3);
+//             var rentedVertices = Pool.Rent(3);
+//
+//             var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
+// #if UNITY_EDITOR
+//             NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
+// #endif
+            var nativeVertices = new NativeArray<Vector2>(3, Allocator.Temp);
 
-            var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
-#if UNITY_EDITOR
-            NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
-#endif
-            
             // var directionToV0 = -(Vector2) (Quaternion.Euler(-60f * Vector3.forward) * Vector2.up);
             // var directionToV1 = Vector2.up;
             // var directionToV2 = -(Vector2) (Quaternion.Euler(60f * Vector3.forward) * Vector2.up);
@@ -58,6 +56,9 @@ namespace SxmTools.UIFactory.Components
             // vertices[2] = localToWorldMatrix.MultiplyPoint3x4(v2);
 
             TriangleBurstProcedures.FillEquilateralTriangle(ref nativeVertices, size, origin, angleAroundOriginInDeg);
+            var rentedVertices = nativeVertices.ToArray();
+            nativeVertices.Dispose();
+
             return rentedVertices;
         }
     }

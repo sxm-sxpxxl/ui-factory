@@ -6,18 +6,49 @@ namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
     {
-        private readonly List<MeshData> _result = new(capacity: 1) {default};
+        private List<MeshData> _result;
+
+        public override void Init()
+        {
+            Debug.Log("FilledPointMeshBuilder Init");
+            _result = new List<MeshData>(capacity: 3)
+            {
+                MeshData.AllocateCircle(),
+                MeshData.AllocateQuad(),
+                MeshData.AllocateTriangle()
+            };
+        }
 
         protected override IReadOnlyList<MeshData> Build(FilledPointMeshDescription description)
         {
-            _result[0] = description.Shape switch
+            switch (description.Shape)
             {
-                PointShape.Circle => MeshUtils.CreateCircleMesh(resolution: 32, 0.5f * description.Size, description.Origin, description.Color),
-                PointShape.Square => MeshUtils.CreateRectangleMesh(angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin, description.Color),
-                PointShape.Triangle => MeshUtils.CreateEquilateralTriangle(angleAroundOriginInDeg: 180f, description.Size, description.Origin, description.Color),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                case PointShape.Circle:
+                {
+                    MeshUtils.CreateCircleMesh(_result[0], radius: 0.5f * description.Size, description.Origin, description.Color);
+                    break;
+                }
+                case PointShape.Square:
+                {
+                    MeshUtils.CreateRectangleMesh(_result[1], angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin, description.Color);
+                    break;
+                }
+                case PointShape.Triangle:
+                {
+                    MeshUtils.CreateEquilateralTriangle(_result[2], angleAroundOriginInDeg: 180f, description.Size, description.Origin, description.Color);
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             return _result;
+        }
+
+        public override void Dispose()
+        {
+            _result[0].Dispose();
+            _result[1].Dispose();
+            _result[2].Dispose();
         }
     }
 }

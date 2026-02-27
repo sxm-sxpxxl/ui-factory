@@ -8,6 +8,10 @@ namespace SxmTools.UIFactory.Components
 
         public IReadOnlyList<MeshData> Build(object description) => Build((T) description);
 
+        public virtual void Init()
+        {
+        }
+
         public virtual void Dispose()
         {
         }

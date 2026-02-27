@@ -15,6 +15,7 @@ namespace SxmTools.UIFactory
             {
                 ReleaseBuilder();
                 _builder = pool.Get();
+                _builder.Init();
             }
 
             _pool = pool;

@@ -13,10 +13,8 @@ namespace SxmTools.UIFactory.Components
     {
         private static readonly ArrayPool<Vector2> Pool = ArrayPool<Vector2>.Shared;
 
-        public static MeshData CreateCircleMesh(int resolution, float radius, Vector2 origin = default, Color32 color = default)
+        public static void CreateCircleMesh(MeshData data, float radius, Vector2 origin = default, Color32 color = default)
         {
-            var mesh = MeshData.AllocateTriangleSameVertex(triangleOrVertexCount: resolution + 1);
-
             // for (var i = 0; i < resolution; i++)
             // {
             //     var t = i * deltaInRad;
@@ -26,19 +24,21 @@ namespace SxmTools.UIFactory.Components
             //     vertices[i].position = origin + new Vector2(x, y);
             // }
 
-            CircleBurstProcedures.FillCircumference(ref mesh.Vertices, ref mesh.Indices, radius, resolution, origin, color);
-            return mesh;
+            CircleBurstProcedures.FillCircumference(ref data.Vertices, ref data.Indices, radius, MeshData.CircleResolution, origin, color);
         }
 
         public static Vector2[] RentVerticesOnCircumference(bool hasOriginPoint, int resolution, float radius, Vector2 origin = default)
         {
-            var verticesCount = resolution + (hasOriginPoint ? 1 : 0);
-            var rentedVertices = Pool.Rent(verticesCount);
+//             var verticesCount = resolution + (hasOriginPoint ? 1 : 0);
+//             var rentedVertices = Pool.Rent(verticesCount);
+//
+//             var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
+// #if UNITY_EDITOR
+//             NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
+// #endif
 
-            var nativeVertices = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray(rentedVertices.AsSpan(), Allocator.None);
-#if UNITY_EDITOR
-            NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref nativeVertices, AtomicSafetyHandle.GetTempUnsafePtrSliceHandle());
-#endif
+            // todo@sxm: потрогать вот эти места
+            var nativeVertices = new NativeArray<Vector2>(resolution + (hasOriginPoint ? 1 : 0), Allocator.Temp);
 
             // var deltaInRad = 2f * Mathf.PI / resolution;
             //
@@ -57,6 +57,9 @@ namespace SxmTools.UIFactory.Components
             // }
 
             CircleBurstProcedures.FillCircumference(ref nativeVertices, radius, resolution, origin, hasOriginPoint);
+            var rentedVertices = nativeVertices.ToArray();
+            nativeVertices.Dispose();
+            
             return rentedVertices;
         }
 
