@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Series
 {
@@ -17,14 +18,14 @@ namespace SxmTools.UIFactory.Components.Series
 
             if (positionsCount != _pointHandles.Count)
             {
-                DisposeHandles();
+                Dispose();
             }
             _result ??= new List<MeshData>(capacity: positionsCount);
             _result.Clear();
 
-            IEnumerable<MeshData> pointsData = Array.Empty<MeshData>();
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
+                // todo@sxm: странный момент, почему не после IgnoredPointIndices?
                 if (positionIndex == _pointHandles.Count)
                 {
                     _pointHandles.Add(new MeshHandle());
@@ -44,18 +45,27 @@ namespace SxmTools.UIFactory.Components.Series
                 _result.AddRange(meshData);
             }
 
+            // Debug.Log($"_result.Count: {_result.Count}");
+
             return _result;
         }
 
         public override void Dispose()
         {
             DisposeHandles();
+            DisposeResult();
         }
 
         private void DisposeHandles()
         {
             _pointHandles.ForEach(handle => handle.Dispose());
             _pointHandles.Clear();
+        }
+
+        private void DisposeResult()
+        {
+            // _result.ForEach(meshData => meshData.Dispose());
+            // _result.Clear();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SxmTools.UIFactory.Components.Lines
 
         public override void Init()
         {
-            Debug.Log("SolidLineMeshBuilder Init");
+            // Debug.Log("SolidLineMeshBuilder Init");
             _result[0] = MeshData.AllocateQuad();
         }
 

@@ -6,14 +6,14 @@ namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
     {
-        private readonly MeshData[] _result = new MeshData[3];
+        private readonly MeshData[] _result = new MeshData[1];
 
         public override void Init()
         {
-            Debug.Log("FilledPointMeshBuilder Init");
+            // Debug.Log("FilledPointMeshBuilder Init");
             _result[0] = MeshData.AllocateCircle();
-            _result[1] = MeshData.AllocateQuad();
-            _result[2] = MeshData.AllocateTriangle();
+            // _result[1] = MeshData.AllocateQuad();
+            // _result[2] = MeshData.AllocateTriangle();
         }
 
         protected override IReadOnlyList<MeshData> Build(FilledPointMeshDescription description)
@@ -44,8 +44,8 @@ namespace SxmTools.UIFactory.Components.Points
         public override void Dispose()
         {
             _result[0].Dispose();
-            _result[1].Dispose();
-            _result[2].Dispose();
+            // _result[1].Dispose();
+            // _result[2].Dispose();
         }
     }
 }

@@ -1,4 +1,5 @@
 using Unity.Collections;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory
@@ -12,12 +13,14 @@ namespace SxmTools.UIFactory
 
         private MeshData(int vertices, int indices)
         {
+            Debug.Log("MeshData.ctor");
             Vertices = new NativeArray<Vertex>(vertices, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             Indices = new NativeArray<ushort>(indices, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
         }
 
         public void Dispose()
         {
+            Debug.Log("MeshData.Dispose");
             Vertices.Dispose();
             Indices.Dispose();
         }
