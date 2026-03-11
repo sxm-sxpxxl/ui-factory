@@ -6,9 +6,9 @@ namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
     {
-        private readonly MeshHandle _lineSeriesHandle = new();
+        private MeshHandle _lineSeriesHandle;
 
-        protected override IReadOnlyList<MeshData> Build(DashLineMeshDescription description)
+        protected override void Build(DashLineMeshDescription description, List<MeshData> result)
         {
             var dashWidth = description.DashWidth;
             var dashGap = description.DashGap;
@@ -34,7 +34,7 @@ namespace SxmTools.UIFactory.Components.Lines
                 ForceBuild: description.ForceBuild
             );
 
-            return UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+            _lineSeriesHandle = UIFactoryManager.BuildMesh(lineSeriesDescription, result, _lineSeriesHandle);
         }
 
         public override void Dispose()

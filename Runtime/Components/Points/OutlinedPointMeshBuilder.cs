@@ -7,9 +7,9 @@ namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
     {
-        private readonly MeshHandle _lineSeriesHandle = new();
+        private MeshHandle _lineSeriesHandle;
 
-        protected override IReadOnlyList<MeshData> Build(OutlinedPointMeshDescription description)
+        protected override void Build(OutlinedPointMeshDescription description, List<MeshData> result)
         {
             var vertices = description.Shape switch
             {
@@ -27,10 +27,9 @@ namespace SxmTools.UIFactory.Components.Points
                 ForceBuild: description.ForceBuild
             );
 
-            var result = UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
-            MeshUtils.ReturnVertices(vertices);
-
-            return result;
+            _lineSeriesHandle = UIFactoryManager.BuildMesh(lineSeriesDescription, result, _lineSeriesHandle);
+            // todo@sxm: странно, нет?
+            // MeshUtils.ReturnVertices(vertices);
         }
 
         public override void Dispose()

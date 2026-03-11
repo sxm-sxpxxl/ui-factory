@@ -19,7 +19,7 @@ namespace SxmTools.UIFactory.Components
         private static readonly Quaternion OrthoRotation = Quaternion.Euler(90f * Vector3.forward);
 
         // todo@sxm: тоже перевести на burst-compile
-        public static void CreateLineMesh(MeshData data, Vector2 startPoint, Vector2 endPoint, float thickness, Color32 color = default)
+        public static void CreateLineMesh(ref MeshData data, Vector2 startPoint, Vector2 endPoint, float thickness, Color32 color = default)
         {
             var lengthDirection = endPoint - startPoint;
             var widthDirection = ((Vector2) (OrthoRotation * lengthDirection)).normalized;
@@ -33,10 +33,10 @@ namespace SxmTools.UIFactory.Components
             var worldSize = maxPoint - minPoint;
             var localSize = (Vector2) (Quaternion.Euler(-angleAroundOriginInDeg * Vector3.forward) * worldSize);
 
-            CreateRectangleMesh(data, angleAroundOriginInDeg, localSize, origin, color);
+            CreateRectangleMesh(ref data, angleAroundOriginInDeg, localSize, origin, color);
         }
 
-        public static void CreateRectangleMesh(MeshData data, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
+        public static void CreateRectangleMesh(ref MeshData data, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
         {
             // var extents = 0.5f * size;
             //

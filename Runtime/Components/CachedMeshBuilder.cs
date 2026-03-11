@@ -5,7 +5,7 @@ namespace SxmTools.UIFactory.Components
     internal sealed class CachedMeshBuilder : MeshBuilder<MeshDescription>
     {
         private readonly IMeshBuilder _meshBuilder;
-        private (MeshDescription description, IReadOnlyList<MeshData> meshData) _cached;
+        private (MeshDescription description, IReadOnlyList<MeshData> result) _cached;
 
         public CachedMeshBuilder(IMeshBuilder meshBuilder)
         {
@@ -14,15 +14,18 @@ namespace SxmTools.UIFactory.Components
 
         public override void Init() => _meshBuilder.Init();
 
-        protected override IReadOnlyList<MeshData> Build(MeshDescription description)
+        protected override void Build(MeshDescription description, List<MeshData> result)
         {
             if (!IsCachedDescriptionChanged() && !description.ForceBuild)
-                return _cached.meshData;
+            {
+                result.AddRange(_cached.result);
+                return;
+            }
 
-            var meshData = _meshBuilder.Build(description);
-            _cached = (description, meshData);
+            _meshBuilder.Build(description, result);
+            _cached = (description, result);
+            return;
 
-            return meshData;
             bool IsCachedDescriptionChanged() => _cached.description == null || !_cached.description.Equals(description);
         }
 

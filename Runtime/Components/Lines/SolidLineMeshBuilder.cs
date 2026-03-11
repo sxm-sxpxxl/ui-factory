@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class SolidLineMeshBuilder : MeshBuilder<SolidLineMeshDescription>
     {
-        private readonly MeshData[] _result = new MeshData[1];
+        private MeshData _result;
 
         public override void Init()
         {
             // Debug.Log("SolidLineMeshBuilder Init");
-            _result[0] = MeshData.AllocateQuad();
+            _result = MeshData.AllocateQuad();
         }
 
-        protected override IReadOnlyList<MeshData> Build(SolidLineMeshDescription description)
+        protected override void Build(SolidLineMeshDescription description, List<MeshData> result)
         {
-            MeshUtils.CreateLineMesh(_result[0], description.StartPosition, description.EndPosition, description.Thickness, description.Color);
-            return _result;
+            MeshUtils.CreateLineMesh(ref _result, description.StartPosition, description.EndPosition, description.Thickness, description.Color);
+            result.Add(_result);
         }
 
-        public override void Dispose() => _result[0].Dispose();
+        public override void Dispose() => _result.Dispose();
     }
 }

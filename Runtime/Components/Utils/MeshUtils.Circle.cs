@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using Unity.Burst;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,7 +12,7 @@ namespace SxmTools.UIFactory.Components
     {
         private static readonly ArrayPool<Vector2> Pool = ArrayPool<Vector2>.Shared;
 
-        public static void CreateCircleMesh(MeshData data, float radius, Vector2 origin = default, Color32 color = default)
+        public static void CreateCircleMesh(ref MeshData data, float radius, Vector2 origin = default, Color32 color = default)
         {
             // for (var i = 0; i < resolution; i++)
             // {

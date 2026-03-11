@@ -6,46 +6,49 @@ namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class FilledPointMeshBuilder : MeshBuilder<FilledPointMeshDescription>
     {
-        private readonly MeshData[] _result = new MeshData[1];
+        private MeshData _resultCircle;
+        private MeshData _resultQuad;
+        private MeshData _resultTriangle;
 
         public override void Init()
         {
-            // Debug.Log("FilledPointMeshBuilder Init");
-            _result[0] = MeshData.AllocateCircle();
-            // _result[1] = MeshData.AllocateQuad();
-            // _result[2] = MeshData.AllocateTriangle();
         }
 
-        protected override IReadOnlyList<MeshData> Build(FilledPointMeshDescription description)
+        protected override void Build(FilledPointMeshDescription description, List<MeshData> result)
         {
             switch (description.Shape)
             {
                 case PointShape.Circle:
                 {
-                    MeshUtils.CreateCircleMesh(_result[0], radius: 0.5f * description.Size, description.Origin, description.Color);
+                    if (!_resultCircle.Inited) _resultCircle = MeshData.AllocateCircle();
+                    MeshUtils.CreateCircleMesh(ref _resultCircle, radius: 0.5f * description.Size, description.Origin, description.Color);
+                    result.Add(_resultCircle);
                     break;
                 }
                 case PointShape.Square:
                 {
-                    MeshUtils.CreateRectangleMesh(_result[1], angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin, description.Color);
+                    if (!_resultQuad.Inited) _resultQuad = MeshData.AllocateQuad();
+                    MeshUtils.CreateRectangleMesh(ref _resultQuad, angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin, description.Color);
+                    result.Add(_resultQuad);
                     break;
                 }
                 case PointShape.Triangle:
                 {
-                    MeshUtils.CreateEquilateralTriangle(_result[2], angleAroundOriginInDeg: 180f, description.Size, description.Origin, description.Color);
+                    if (!_resultTriangle.Inited) _resultTriangle = MeshData.AllocateTriangle();
+                    MeshUtils.CreateEquilateralTriangle(ref _resultTriangle, angleAroundOriginInDeg: 180f, description.Size, description.Origin, description.Color);
+                    result.Add(_resultTriangle);
                     break;
                 }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            return _result;
         }
 
         public override void Dispose()
         {
-            _result[0].Dispose();
-            // _result[1].Dispose();
-            // _result[2].Dispose();
+            _resultCircle.Dispose();
+            _resultQuad.Dispose();
+            _resultTriangle.Dispose();
         }
     }
 }

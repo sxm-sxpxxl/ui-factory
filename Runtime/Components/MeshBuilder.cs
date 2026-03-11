@@ -4,9 +4,9 @@ namespace SxmTools.UIFactory.Components
 {
     internal abstract class MeshBuilder<T> : IMeshBuilder where T : MeshDescription
     {
-        protected abstract IReadOnlyList<MeshData> Build(T description);
+        protected abstract void Build(T description, List<MeshData> result);
 
-        public IReadOnlyList<MeshData> Build(object description) => Build((T) description);
+        public void Build(object description, List<MeshData> result) => Build((T) description, result);
 
         public virtual void Init()
         {

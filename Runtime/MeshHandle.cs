@@ -4,11 +4,16 @@ using SxmTools.UIFactory.Components;
 
 namespace SxmTools.UIFactory
 {
+    // todo@sxm: подумать над тем чтобы сделать его struct
     public sealed class MeshHandle : IDisposable
     {
         [CanBeNull] private Type _descriptionType;
         [CanBeNull] private MeshBuilderPool _pool;
         [CanBeNull] private IMeshBuilder _builder;
+
+        internal MeshHandle()
+        {
+        }
 
         internal IMeshBuilder GetMeshBuilder(MeshBuilderPool pool, Type descriptionType)
         {

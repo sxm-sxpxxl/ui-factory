@@ -10,7 +10,7 @@ namespace SxmTools.UIFactory.Components
 {
     public static partial class MeshUtils
     {
-        public static void CreateEquilateralTriangle(MeshData data, float angleAroundOriginInDeg, float size, Vector2 origin = default, Color32 color = default)
+        public static void CreateEquilateralTriangle(ref MeshData data, float angleAroundOriginInDeg, float size, Vector2 origin = default, Color32 color = default)
         {
             // var directionToV0 = -(Vector2) (Quaternion.Euler(-60f * Vector3.forward) * Vector2.up);
             // var directionToV1 = Vector2.up;

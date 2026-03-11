@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class PointSeriesMeshBuilder : MeshBuilder<PointSeriesMeshDescription>
     {
-        private readonly List<MeshHandle> _pointHandles = new();
-        private List<MeshData> _result;
+        private List<MeshHandle> _pointHandles;
 
-        protected override IReadOnlyList<MeshData> Build(PointSeriesMeshDescription description)
+        protected override void Build(PointSeriesMeshDescription description, List<MeshData> result)
         {
             var positionsCount = description.Positions.Count;
 
             if (positionsCount == 0)
-                return Array.Empty<MeshData>();
+                return;
+
+            _pointHandles ??= new List<MeshHandle>(capacity: positionsCount);
 
             if (positionsCount != _pointHandles.Count)
             {
+                // todo@a.pestov: странный момент, здесь нужно не диспоузить и умно переиспользовать уже выделенную память
                 Dispose();
             }
-            _result ??= new List<MeshData>(capacity: positionsCount);
-            _result.Clear();
 
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
@@ -41,31 +39,14 @@ namespace SxmTools.UIFactory.Components.Series
                     Origin = position
                 };
 
-                var meshData = UIFactoryManager.Build(pointDescription, _pointHandles[positionIndex]);
-                _result.AddRange(meshData);
+                _pointHandles[positionIndex] = UIFactoryManager.BuildMesh(pointDescription, result, _pointHandles[positionIndex]);
             }
-
-            // Debug.Log($"_result.Count: {_result.Count}");
-
-            return _result;
         }
 
         public override void Dispose()
         {
-            DisposeHandles();
-            DisposeResult();
-        }
-
-        private void DisposeHandles()
-        {
-            _pointHandles.ForEach(handle => handle.Dispose());
+            foreach (var handle in _pointHandles) handle.Dispose();
             _pointHandles.Clear();
-        }
-
-        private void DisposeResult()
-        {
-            // _result.ForEach(meshData => meshData.Dispose());
-            // _result.Clear();
         }
     }
 }

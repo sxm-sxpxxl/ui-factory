@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
     {
-        private readonly List<MeshHandle> _lineHandles = new();
-        private List<MeshData> _result;
+        private List<MeshHandle> _lineHandles;
 
-        protected override IReadOnlyList<MeshData> Build(LineSeriesMeshDescription description)
+        protected override void Build(LineSeriesMeshDescription description, List<MeshData> result)
         {
-            if (description.Positions.Count == 0)
-                return Array.Empty<MeshData>();
-
             var linesCount = description.Positions.Count - (description.Closed ? 0 : 1);
+
+            if (linesCount == 0)
+                return;
+
+            _lineHandles ??= new List<MeshHandle>(capacity: linesCount);
+
             if (linesCount != _lineHandles.Count)
             {
                 DisposeHandles();
             }
-            _result ??= new List<MeshData>(capacity: linesCount);
-            _result.Clear();
 
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
@@ -44,11 +43,8 @@ namespace SxmTools.UIFactory.Components.Series
                     _lineHandles.Add(new MeshHandle());
                 }
 
-                var meshData = UIFactoryManager.Build(lineDescription, _lineHandles[currentPositionIndex]);
-                _result.AddRange(meshData);
+                _lineHandles[currentPositionIndex] = UIFactoryManager.BuildMesh(lineDescription, result, _lineHandles[currentPositionIndex]);
             }
-
-            return _result;
         }
 
         public override void Dispose()
@@ -58,7 +54,7 @@ namespace SxmTools.UIFactory.Components.Series
 
         private void DisposeHandles()
         {
-            _lineHandles.ForEach(handle => handle.Dispose());
+            foreach (var handle in _lineHandles) handle.Dispose();
             _lineHandles.Clear();
         }
     }
