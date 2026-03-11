@@ -8,17 +8,17 @@ namespace SxmTools.UIFactory.Components
 {
     internal static partial class MeshUtils
     {
-        private static readonly Vector2[] VerticesOnCircumference = new Vector2[32];
+        private static readonly Vector2[] VerticesOnCircumference = new Vector2[MeshData.CircleResolution];
 
         public static void CreateCircleMesh(ref MeshData data, float radius, Vector2 origin = default, Color32 color = default)
         {
-            BurstProcedures.FillCircumference(ref data.Vertices, ref data.Indices, radius, MeshData.CircleResolution, origin, color);
+            BurstProcedures.FillCircumference(ref data.Vertices, ref data.Indices, radius, origin, color);
         }
 
         public static Vector2[] GetVerticesOnCircumference(float radius, Vector2 origin = default)
         {
             var nativeVertices = VerticesOnCircumference.WrapAsNativeArray();
-            BurstProcedures.FillCircumference(ref nativeVertices, radius, VerticesOnCircumference.Length, origin);
+            BurstProcedures.FillCircumference(ref nativeVertices, radius, origin);
 
             return VerticesOnCircumference;
         }
@@ -30,15 +30,14 @@ namespace SxmTools.UIFactory.Components
                 ref NativeArray<Vertex> vertices,
                 ref NativeArray<ushort> indices,
                 float radius,
-                int resolution,
                 in float2 origin,
                 in Color32 color
             )
             {
-                float deltaInRad = (2f * math.PI) / resolution;
-                ushort last = (ushort) resolution;
+                ushort last = (ushort) (vertices.Length - 1);
+                float deltaInRad = 2f * math.PI / last;
 
-                for (int i = 0; i < resolution; i++)
+                for (ushort i = 0; i < last; i++)
                 {
                     float t = i * deltaInRad;
                     math.sincos(t, out float sin, out float cos);
@@ -49,8 +48,8 @@ namespace SxmTools.UIFactory.Components
                         tint = color
                     };
 
-                    ushort curr = (ushort) i;
-                    ushort next = (ushort) ((i + 1) % resolution);
+                    ushort curr = i;
+                    ushort next = (ushort) ((i + 1) % last);
 
                     int baseIdx = i * 3;
                     indices[baseIdx + 0] = curr;
@@ -69,10 +68,10 @@ namespace SxmTools.UIFactory.Components
             public static void FillCircumference(
                 ref NativeArray<Vector2> vertices,
                 float radius,
-                int resolution,
                 in float2 origin
             )
             {
+                int resolution = vertices.Length;
                 float deltaInRad = (2f * math.PI) / resolution;
 
                 for (int i = 0; i < resolution; i++)
