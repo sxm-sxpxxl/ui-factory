@@ -15,29 +15,15 @@ namespace SxmTools.UIFactory.Components
         }
 
         private static readonly Vector2[] VerticesOnRectangle = new Vector2[4];
-        private static readonly Quaternion OrthoRotation = Quaternion.Euler(90f * Vector3.forward);
 
-        // todo@sxm: тоже перевести на burst-compile
         public static void CreateLineMesh(ref MeshData data, Vector2 startPoint, Vector2 endPoint, float thickness, Color32 color = default)
         {
-            var lengthDirection = endPoint - startPoint;
-            var widthDirection = ((Vector2) (OrthoRotation * lengthDirection)).normalized;
-            var halfWidthOffset = 0.5f * thickness * widthDirection;
-
-            var minPoint = startPoint - halfWidthOffset;
-            var maxPoint = endPoint + halfWidthOffset;
-
-            var origin = 0.5f * (startPoint + endPoint);
-            var angleAroundOriginInDeg = Vector2.SignedAngle(Vector2.up, widthDirection);
-            var worldSize = maxPoint - minPoint;
-            var localSize = (Vector2) (Quaternion.Euler(-angleAroundOriginInDeg * Vector3.forward) * worldSize);
-
-            CreateRectangleMesh(ref data, angleAroundOriginInDeg, localSize, origin, color);
+            BurstProcedures.FillLine(ref data.Vertices, ref data.Indices, startPoint, endPoint, thickness, color);
         }
 
         public static void CreateRectangleMesh(ref MeshData data, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
         {
-            BurstProcedures.FillRectangle(ref data.Vertices, ref data.Indices, size, origin, angleAroundOriginInDeg, color, true);
+            BurstProcedures.FillRectangle(ref data.Vertices, ref data.Indices, size, origin, angleAroundOriginInDeg, color);
         }
 
         public static Vector2[] GetVerticesOnRectangle(RectangleVerticesBuildOrder buildOrder, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default)
@@ -51,14 +37,34 @@ namespace SxmTools.UIFactory.Components
         private static partial class BurstProcedures
         {
             [BurstCompile]
+            public static void FillLine(
+                ref NativeArray<Vertex> vertices,
+                ref NativeArray<ushort> indices,
+                in float2 start,
+                in float2 end,
+                float thickness,
+                in Color32 color)
+            {
+                float2 dir = end - start;
+                float length = math.length(dir);
+
+                float2 origin = (start + end) * 0.5f;
+                float2 size = new float2(length, thickness);
+
+                float angleRad = math.atan2(dir.y, dir.x);
+                float angleDeg = math.degrees(angleRad);
+
+                FillRectangle(ref vertices, ref indices, size, origin, angleDeg, color);
+            }
+
+            [BurstCompile]
             public static void FillRectangle(
                 ref NativeArray<Vertex> vertices,
                 ref NativeArray<ushort> indices,
                 in float2 size,
                 in float2 origin,
                 float angleDeg,
-                in Color32 color,
-                bool isCrissCross
+                in Color32 color
             )
             {
                 float2 extents = 0.5f * size;
@@ -77,8 +83,8 @@ namespace SxmTools.UIFactory.Components
                 vertices[0] = CreateVertex(matrix, v0, color);
                 vertices[1] = CreateVertex(matrix, v1, color);
 
-                vertices[2] = CreateVertex(matrix, isCrissCross ? v2 : v3, color);
-                vertices[3] = CreateVertex(matrix, isCrissCross ? v3 : v2, color);
+                vertices[2] = CreateVertex(matrix, v2, color);
+                vertices[3] = CreateVertex(matrix, v3, color);
 
                 indices[0] = 0;
                 indices[1] = 2;
