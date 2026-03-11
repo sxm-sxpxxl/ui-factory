@@ -17,7 +17,7 @@ namespace SxmTools.UIFactory.Components.Series
 
             if (positionsCount != _pointHandles.Count)
             {
-                // todo@a.pestov: странный момент, здесь нужно не диспоузить и умно переиспользовать уже выделенную память
+                // todo@sxm: странный момент, здесь нужно не диспоузить и умно переиспользовать уже выделенную память
                 Dispose();
             }
 

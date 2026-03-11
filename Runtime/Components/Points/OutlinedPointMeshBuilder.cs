@@ -13,9 +13,9 @@ namespace SxmTools.UIFactory.Components.Points
         {
             var vertices = description.Shape switch
             {
-                PointShape.Circle => MeshUtils.RentVerticesOnCircumference(hasOriginPoint: false, resolution: 32, 0.5f * description.Size, description.Origin),
-                PointShape.Square => MeshUtils.RentVerticesOnRectangle(buildOrder: MeshUtils.RectangleVerticesBuildOrder.Cyclic, angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin),
-                PointShape.Triangle => MeshUtils.RentVerticesOnEquilateralTriangle(angleAroundOriginInDeg: 180f, description.Size, description.Origin),
+                PointShape.Circle => MeshUtils.GetVerticesOnCircumference(0.5f * description.Size, description.Origin),
+                PointShape.Square => MeshUtils.GetVerticesOnRectangle(buildOrder: MeshUtils.RectangleVerticesBuildOrder.Cyclic, angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin),
+                PointShape.Triangle => MeshUtils.GetVerticesOnEquilateralTriangle(angleAroundOriginInDeg: 180f, description.Size, description.Origin),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -28,8 +28,6 @@ namespace SxmTools.UIFactory.Components.Points
             );
 
             _lineSeriesHandle = UIFactoryManager.BuildMesh(lineSeriesDescription, result, _lineSeriesHandle);
-            // todo@sxm: странно, нет?
-            // MeshUtils.ReturnVertices(vertices);
         }
 
         public override void Dispose()
