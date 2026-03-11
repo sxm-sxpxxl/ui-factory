@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
 {
@@ -13,12 +15,12 @@ namespace SxmTools.UIFactory.Components.Series
             if (positionsCount == 0)
                 return;
 
-            _pointHandles ??= new List<MeshHandle>(capacity: positionsCount);
+            _pointHandles ??= ListPool<MeshHandle>.Get();
 
             if (positionsCount != _pointHandles.Count)
             {
                 // todo@sxm: странный момент, здесь нужно не диспоузить и умно переиспользовать уже выделенную память
-                Dispose();
+                DisposeHandles();
             }
 
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
@@ -45,7 +47,18 @@ namespace SxmTools.UIFactory.Components.Series
 
         public override void Dispose()
         {
-            foreach (var handle in _pointHandles) handle.Dispose();
+            DisposeHandles();
+
+            ListPool<MeshHandle>.Release(_pointHandles);
+            _pointHandles = null;
+        }
+
+        private void DisposeHandles()
+        {
+            foreach (var handle in _pointHandles)
+            {
+                handle.Dispose();
+            }
             _pointHandles.Clear();
         }
     }

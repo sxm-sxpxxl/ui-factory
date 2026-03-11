@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using SxmTools.UIFactory.Components.Series;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
     {
         private MeshHandle _lineSeriesHandle;
+        private List<Vector2> _positions;
 
         protected override void Build(DashLineMeshDescription description, List<MeshData> result)
         {
@@ -16,10 +18,13 @@ namespace SxmTools.UIFactory.Components.Lines
             var dashesCount = Mathf.CeilToInt((description.LineLength + dashGap) / (dashWidth + dashGap));
             var positionsCount = dashesCount + 1;
 
-            var positions = new Vector2[positionsCount];
+            _positions ??= ListPool<Vector2>.Get();
+            _positions.Clear();
+
             for (var i = 0; i < positionsCount; i++)
             {
-                positions[i] = Vector2.Lerp(description.StartPosition, description.EndPosition, (float) i / dashesCount);
+                var position = Vector2.Lerp(description.StartPosition, description.EndPosition, (float) i / dashesCount);
+                _positions.Add(position);
             }
 
             var lineSeriesDescription = new LineSeriesMeshDescription(
@@ -30,7 +35,7 @@ namespace SxmTools.UIFactory.Components.Lines
                 ),
                 Padding: 0.5f * description.DashGap,
                 Closed: false,
-                Positions: positions,
+                Positions: _positions,
                 ForceBuild: description.ForceBuild
             );
 
@@ -40,6 +45,11 @@ namespace SxmTools.UIFactory.Components.Lines
         public override void Dispose()
         {
             _lineSeriesHandle.Dispose();
+
+            _positions.Clear();
+            ListPool<Vector2>.Release(_positions);
+
+            _positions = null;
         }
     }
 }

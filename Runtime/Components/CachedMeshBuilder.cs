@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components
 {
@@ -25,7 +26,7 @@ namespace SxmTools.UIFactory.Components
             _meshBuilder.Build(description, result);
 
             _cached.description = description;
-            _cached.result ??= new List<MeshData>(capacity: result.Count);
+            _cached.result ??= ListPool<MeshData>.Get();
             _cached.result.Clear();
             _cached.result.AddRange(result);
 
@@ -34,6 +35,11 @@ namespace SxmTools.UIFactory.Components
             bool IsCachedDescriptionChanged() => _cached.description == null || !_cached.description.Equals(description);
         }
 
-        public override void Dispose() => _meshBuilder.Dispose();
+        public override void Dispose()
+        {
+            _meshBuilder.Dispose();
+            ListPool<MeshData>.Release(_cached.result);
+            _cached = (null, null);
+        }
     }
 }

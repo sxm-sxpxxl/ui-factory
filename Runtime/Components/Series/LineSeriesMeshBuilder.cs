@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
 {
@@ -13,7 +14,7 @@ namespace SxmTools.UIFactory.Components.Series
             if (linesCount <= 0)
                 return;
 
-            _lineHandles ??= new List<MeshHandle>(capacity: linesCount);
+            _lineHandles ??= ListPool<MeshHandle>.Get();
 
             if (linesCount != _lineHandles.Count)
             {
@@ -50,11 +51,18 @@ namespace SxmTools.UIFactory.Components.Series
         public override void Dispose()
         {
             DisposeHandles();
+
+            // todo@sxm: есть ещё какая-то петрушка с Release и Dispose - нужно посмотреть вместе переиспользованием хендлов
+            ListPool<MeshHandle>.Release(_lineHandles);
+            _lineHandles = null;
         }
 
         private void DisposeHandles()
         {
-            foreach (var handle in _lineHandles) handle.Dispose();
+            foreach (var handle in _lineHandles)
+            {
+                handle.Dispose();
+            }
             _lineHandles.Clear();
         }
     }
