@@ -10,7 +10,7 @@ namespace SxmTools.UIFactory.Components.Series
         {
             var linesCount = description.Positions.Count - (description.Closed ? 0 : 1);
 
-            if (linesCount == 0)
+            if (linesCount <= 0)
                 return;
 
             _lineHandles ??= new List<MeshHandle>(capacity: linesCount);
