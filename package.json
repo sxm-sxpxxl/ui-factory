@@ -19,6 +19,9 @@
     "point",
     "series"
   ],
+  "dependencies": {
+    "com.unity.burst": "1.8.28"
+  },
   "author": {
     "name": "Sxm Tools",
     "url": "https://github.com/sxm-sxpxxl",
