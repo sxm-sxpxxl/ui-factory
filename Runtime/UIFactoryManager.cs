@@ -9,7 +9,6 @@ namespace SxmTools.UIFactory
 {
     public static class UIFactoryManager
     {
-        // todo@sxm: тут бы подумать ещё раз не будет ли проблем со статикой
         private static readonly Dictionary<Type, MeshBuilderPool> Pools = new();
         private static readonly List<MeshData> Result = new();
 

@@ -4,7 +4,6 @@ using SxmTools.UIFactory.Components;
 
 namespace SxmTools.UIFactory
 {
-    // todo@sxm: подумать над тем чтобы сделать его struct
     public sealed class MeshHandle : IDisposable
     {
         [CanBeNull] private Type _descriptionType;
