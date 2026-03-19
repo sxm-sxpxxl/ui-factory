@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
@@ -16,21 +15,10 @@ namespace SxmTools.UIFactory.Components.Series
                 return;
 
             _pointHandles ??= ListPool<MeshHandle>.Get();
-
-            if (positionsCount != _pointHandles.Count)
-            {
-                // todo@sxm: странный момент, здесь нужно не диспоузить и умно переиспользовать уже выделенную память
-                DisposeHandles();
-            }
+            ResizeHandles(_pointHandles, positionsCount);
 
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
-                // todo@sxm: странный момент, почему не после IgnoredPointIndices?
-                if (positionIndex == _pointHandles.Count)
-                {
-                    _pointHandles.Add(new MeshHandle());
-                }
-
                 if (description.IgnoredPointIndices != null && description.IgnoredPointIndices.Contains(positionIndex))
                     continue;
 
@@ -47,19 +35,27 @@ namespace SxmTools.UIFactory.Components.Series
 
         public override void Dispose()
         {
-            DisposeHandles();
+            foreach (var handle in _pointHandles)
+            {
+                handle.Dispose();
+            }
 
             ListPool<MeshHandle>.Release(_pointHandles);
             _pointHandles = null;
         }
 
-        private void DisposeHandles()
+        private static void ResizeHandles(List<MeshHandle> handles, int targetCount)
         {
-            foreach (var handle in _pointHandles)
+            for (var i = handles.Count - 1; i >= targetCount; i--)
             {
-                handle.Dispose();
+                handles[i].Dispose();
+                handles.RemoveAt(i);
             }
-            _pointHandles.Clear();
+
+            for (var i = handles.Count; i < targetCount; i++)
+            {
+                handles.Add(new MeshHandle());
+            }
         }
     }
 }

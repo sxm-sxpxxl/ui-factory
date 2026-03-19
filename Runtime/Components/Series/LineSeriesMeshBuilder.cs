@@ -15,11 +15,7 @@ namespace SxmTools.UIFactory.Components.Series
                 return;
 
             _lineHandles ??= ListPool<MeshHandle>.Get();
-
-            if (linesCount != _lineHandles.Count)
-            {
-                DisposeHandles();
-            }
+            ResizeHandles(_lineHandles, linesCount);
 
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
@@ -39,31 +35,33 @@ namespace SxmTools.UIFactory.Components.Series
                     EndPosition = endPosition - paddingOffset
                 };
 
-                if (currentPositionIndex == _lineHandles.Count)
-                {
-                    _lineHandles.Add(new MeshHandle());
-                }
-
                 _lineHandles[currentPositionIndex] = UIFactoryManager.BuildMesh(lineDescription, result, _lineHandles[currentPositionIndex]);
             }
         }
 
         public override void Dispose()
         {
-            DisposeHandles();
-
-            // todo@sxm: есть ещё какая-то петрушка с Release и Dispose - нужно посмотреть вместе переиспользованием хендлов
-            ListPool<MeshHandle>.Release(_lineHandles);
-            _lineHandles = null;
-        }
-
-        private void DisposeHandles()
-        {
             foreach (var handle in _lineHandles)
             {
                 handle.Dispose();
             }
-            _lineHandles.Clear();
+
+            ListPool<MeshHandle>.Release(_lineHandles);
+            _lineHandles = null;
+        }
+
+        private static void ResizeHandles(List<MeshHandle> handles, int targetCount)
+        {
+            for (var i = handles.Count - 1; i >= targetCount; i--)
+            {
+                handles[i].Dispose();
+                handles.RemoveAt(i);
+            }
+
+            for (var i = handles.Count; i < targetCount; i++)
+            {
+                handles.Add(new MeshHandle());
+            }
         }
     }
 }
