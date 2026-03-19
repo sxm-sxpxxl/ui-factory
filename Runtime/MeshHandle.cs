@@ -32,9 +32,13 @@ namespace SxmTools.UIFactory
 
         private void ReleaseBuilder()
         {
-            _builder?.Dispose();
-            _builder = null;
-            _pool?.Release(_builder);
+            if (_builder != null)
+            {
+                _builder.Dispose();
+                _pool?.Release(_builder);
+                _builder = null;
+            }
+
             _pool = null;
             _descriptionType = null;
         }
