@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory
 {
-    public struct MeshData
+    internal struct MeshData
     {
         public const int CircleResolution = 8;
 
