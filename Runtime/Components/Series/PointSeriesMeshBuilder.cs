@@ -1,35 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class PointSeriesMeshBuilder : MeshBuilder<PointSeriesMeshDescription>
     {
-        private readonly List<MeshHandle> _pointHandles = new();
-        private List<MeshData> _result;
+        private List<MeshHandle> _pointHandles;
 
-        protected override IReadOnlyList<MeshData> Build(PointSeriesMeshDescription description)
+        protected override void Build(PointSeriesMeshDescription description, List<MeshData> result)
         {
             var positionsCount = description.Positions.Count;
 
             if (positionsCount == 0)
-                return Array.Empty<MeshData>();
+                return;
 
-            if (positionsCount != _pointHandles.Count)
-            {
-                DisposeHandles();
-            }
-            _result ??= new List<MeshData>(capacity: positionsCount);
-            _result.Clear();
+            _pointHandles ??= ListPool<MeshHandle>.Get();
+            ResizeHandles(_pointHandles, positionsCount);
 
-            IEnumerable<MeshData> pointsData = Array.Empty<MeshData>();
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
-                if (positionIndex == _pointHandles.Count)
-                {
-                    _pointHandles.Add(new MeshHandle());
-                }
-
                 if (description.IgnoredPointIndices != null && description.IgnoredPointIndices.Contains(positionIndex))
                     continue;
 
@@ -40,22 +29,33 @@ namespace SxmTools.UIFactory.Components.Series
                     Origin = position
                 };
 
-                var meshData = UIFactoryManager.Build(pointDescription, _pointHandles[positionIndex]);
-                _result.AddRange(meshData);
+                _pointHandles[positionIndex] = UIFactoryManager.BuildMesh(pointDescription, result, _pointHandles[positionIndex]);
             }
-
-            return _result;
         }
 
         public override void Dispose()
         {
-            DisposeHandles();
+            foreach (var handle in _pointHandles)
+            {
+                handle.Dispose();
+            }
+
+            ListPool<MeshHandle>.Release(_pointHandles);
+            _pointHandles = null;
         }
 
-        private void DisposeHandles()
+        private static void ResizeHandles(List<MeshHandle> handles, int targetCount)
         {
-            _pointHandles.ForEach(handle => handle.Dispose());
-            _pointHandles.Clear();
+            for (var i = handles.Count - 1; i >= targetCount; i--)
+            {
+                handles[i].Dispose();
+                handles.RemoveAt(i);
+            }
+
+            for (var i = handles.Count; i < targetCount; i++)
+            {
+                handles.Add(new MeshHandle());
+            }
         }
     }
 }

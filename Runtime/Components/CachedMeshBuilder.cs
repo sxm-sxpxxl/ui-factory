@@ -1,30 +1,45 @@
 ﻿using System.Collections.Generic;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components
 {
     internal sealed class CachedMeshBuilder : MeshBuilder<MeshDescription>
     {
         private readonly IMeshBuilder _meshBuilder;
-        private (MeshDescription description, IReadOnlyList<MeshData> meshData) _cached;
+        private (MeshDescription description, List<MeshData> result) _cached;
 
         public CachedMeshBuilder(IMeshBuilder meshBuilder)
         {
             _meshBuilder = meshBuilder;
         }
 
-        protected override IReadOnlyList<MeshData> Build(MeshDescription description)
+        public override void Init() => _meshBuilder.Init();
+
+        protected override void Build(MeshDescription description, List<MeshData> result)
         {
-            if (!IsCachedDescriptionChanged(description) && !description.ForceBuild)
-                return _cached.meshData;
+            if (!IsCachedDescriptionChanged() && !description.ForceBuild)
+            {
+                result.AddRange(_cached.result);
+                return;
+            }
 
-            var meshData = _meshBuilder.Build(description);
-            _cached = (description, meshData);
+            _meshBuilder.Build(description, result);
 
-            return meshData;
+            _cached.description = description;
+            _cached.result ??= ListPool<MeshData>.Get();
+            _cached.result.Clear();
+            _cached.result.AddRange(result);
+
+            return;
+
+            bool IsCachedDescriptionChanged() => _cached.description == null || !_cached.description.Equals(description);
         }
 
-        private bool IsCachedDescriptionChanged(MeshDescription description) => _cached.description == null || !_cached.description.Equals(description);
-
-        public override void Dispose() => _meshBuilder.Dispose();
+        public override void Dispose()
+        {
+            _meshBuilder.Dispose();
+            ListPool<MeshData>.Release(_cached.result);
+            _cached = (null, null);
+        }
     }
 }

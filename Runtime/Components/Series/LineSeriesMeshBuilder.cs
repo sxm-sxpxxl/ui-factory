@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
 {
     internal sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
     {
-        private readonly List<MeshHandle> _lineHandles = new();
-        private List<MeshData> _result;
+        private List<MeshHandle> _lineHandles;
 
-        protected override IReadOnlyList<MeshData> Build(LineSeriesMeshDescription description)
+        protected override void Build(LineSeriesMeshDescription description, List<MeshData> result)
         {
-            if (description.Positions.Count == 0)
-                return Array.Empty<MeshData>();
-
             var linesCount = description.Positions.Count - (description.Closed ? 0 : 1);
-            if (linesCount != _lineHandles.Count)
-            {
-                DisposeHandles();
-            }
-            _result ??= new List<MeshData>(capacity: linesCount);
-            _result.Clear();
+
+            if (linesCount <= 0)
+                return;
+
+            _lineHandles ??= ListPool<MeshHandle>.Get();
+            ResizeHandles(_lineHandles, linesCount);
 
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
@@ -39,27 +35,33 @@ namespace SxmTools.UIFactory.Components.Series
                     EndPosition = endPosition - paddingOffset
                 };
 
-                if (currentPositionIndex == _lineHandles.Count)
-                {
-                    _lineHandles.Add(new MeshHandle());
-                }
-
-                var meshData = UIFactoryManager.Build(lineDescription, _lineHandles[currentPositionIndex]);
-                _result.AddRange(meshData);
+                _lineHandles[currentPositionIndex] = UIFactoryManager.BuildMesh(lineDescription, result, _lineHandles[currentPositionIndex]);
             }
-
-            return _result;
         }
 
         public override void Dispose()
         {
-            DisposeHandles();
+            foreach (var handle in _lineHandles)
+            {
+                handle.Dispose();
+            }
+
+            ListPool<MeshHandle>.Release(_lineHandles);
+            _lineHandles = null;
         }
 
-        private void DisposeHandles()
+        private static void ResizeHandles(List<MeshHandle> handles, int targetCount)
         {
-            _lineHandles.ForEach(handle => handle.Dispose());
-            _lineHandles.Clear();
+            for (var i = handles.Count - 1; i >= targetCount; i--)
+            {
+                handles[i].Dispose();
+                handles.RemoveAt(i);
+            }
+
+            for (var i = handles.Count; i < targetCount; i++)
+            {
+                handles.Add(new MeshHandle());
+            }
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using SxmTools.UIFactory.Components.Series;
 
 namespace SxmTools.UIFactory.Components.Graphs
 {
     internal sealed class GraphMeshBuilder : MeshBuilder<GraphMeshDescription>
     {
-        private readonly MeshHandle _lineSeriesHandle = new();
-        private readonly MeshHandle _pointSeriesHandle = new();
+        private MeshHandle _lineSeriesHandle;
+        [CanBeNull] private MeshHandle _pointSeriesHandle;
 
-        protected override IReadOnlyList<MeshData> Build(GraphMeshDescription description)
+        protected override void Build(GraphMeshDescription description, List<MeshData> result)
         {
             var lineSeriesDescription = new LineSeriesMeshDescription(
                 Line: description.Line,
@@ -17,10 +18,10 @@ namespace SxmTools.UIFactory.Components.Graphs
                 Positions: description.Positions,
                 ForceBuild: description.ForceBuild
             );
-            var lineSeriesData = UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+            _lineSeriesHandle = UIFactoryManager.BuildMesh(lineSeriesDescription, result, _lineSeriesHandle);
 
             if (description.Point == null)
-                return lineSeriesData;
+                return;
 
             var pointSeriesDescription = new PointSeriesMeshDescription(
                 Point: description.Point,
@@ -28,16 +29,13 @@ namespace SxmTools.UIFactory.Components.Graphs
                 IgnoredPointIndices: description.IgnoredPointIndices,
                 ForceBuild: description.ForceBuild
             );
-            var pointSeriesData = UIFactoryManager.Build(pointSeriesDescription, _pointSeriesHandle);
-
-            ((List<MeshData>) lineSeriesData).AddRange(pointSeriesData);
-            return lineSeriesData;
+            _pointSeriesHandle = UIFactoryManager.BuildMesh(pointSeriesDescription, result, _pointSeriesHandle);
         }
 
         public override void Dispose()
         {
             _lineSeriesHandle.Dispose();
-            _pointSeriesHandle.Dispose();
+            _pointSeriesHandle?.Dispose();
         }
     }
 }

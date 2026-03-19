@@ -2,8 +2,8 @@
 {
     public enum PointShape
     {
-        Circle,
-        Square,
-        Triangle
+        Circle = 0,
+        Square = 1,
+        Triangle = 2
     }
 }

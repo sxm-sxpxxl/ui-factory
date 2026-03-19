@@ -1,65 +1,38 @@
-using UnityEngine.Assertions;
+using Unity.Collections;
 using UnityEngine.UIElements;
 
 namespace SxmTools.UIFactory
 {
-    public readonly struct MeshData
+    internal struct MeshData
     {
-        private interface IMeshDataAllocationRequest
-        {
-            MeshData Allocate();
-        }
+        public const int CircleResolution = 8;
 
-        internal readonly struct QuadAllocationRequest : IMeshDataAllocationRequest
-        {
-            private readonly int _quadsCount;
-
-            public QuadAllocationRequest(int quadsCount)
-            {
-                Assert.IsTrue(quadsCount > 0);
-                _quadsCount = quadsCount;
-            }
-
-            public MeshData Allocate() => new(vertices: 4 * _quadsCount, indices: 6 * _quadsCount);
-        }
-
-        internal readonly struct TriangleSameVertexAllocationRequest : IMeshDataAllocationRequest
-        {
-            private readonly int _triangleOrVertexCount;
-
-            public TriangleSameVertexAllocationRequest(int triangleOrVertexCount)
-            {
-                Assert.IsTrue(triangleOrVertexCount > 0);
-                _triangleOrVertexCount = triangleOrVertexCount;
-            }
-
-            public MeshData Allocate() => new(vertices: _triangleOrVertexCount, indices: 3 * _triangleOrVertexCount);
-        }
-
-        internal readonly struct TriangleNotSameVertexAllocationRequest : IMeshDataAllocationRequest
-        {
-            private readonly int _trianglesCount;
-            private readonly int _verticesCount;
-
-            public TriangleNotSameVertexAllocationRequest(int trianglesCount, int verticesCount)
-            {
-                Assert.IsTrue(trianglesCount > 0);
-                Assert.IsTrue(verticesCount > 0);
-                Assert.IsTrue(trianglesCount < verticesCount);
-                _trianglesCount = trianglesCount;
-                _verticesCount = verticesCount;
-            }
-
-            public MeshData Allocate() => new(vertices: _verticesCount, indices: 3 * _trianglesCount);
-        }
-
-        public readonly Vertex[] Vertices;
-        public readonly ushort[] Indices;
+        public NativeArray<Vertex> Vertices;
+        public NativeArray<ushort> Indices;
+        public bool Inited;
 
         private MeshData(int vertices, int indices)
         {
-            Vertices = new Vertex[vertices];
-            Indices = new ushort[indices];
+            Vertices = new NativeArray<Vertex>(vertices, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            Indices = new NativeArray<ushort>(indices, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            Inited = true;
         }
+
+        public void Dispose()
+        {
+            if (!Inited)
+                return;
+
+            Vertices.Dispose();
+            Indices.Dispose();
+
+            Inited = false;
+        }
+
+        public static MeshData AllocateQuad() => new(vertices: 4, indices: 6);
+
+        public static MeshData AllocateTriangle() => new(vertices: 3, indices: 3);
+
+        public static MeshData AllocateCircle() => new(vertices: CircleResolution, indices: 3 * (CircleResolution - 1));
     }
 }

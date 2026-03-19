@@ -7,13 +7,13 @@ namespace SxmTools.UIFactory.Components.Points
 {
     internal sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
     {
-        private readonly MeshHandle _lineSeriesHandle = new();
+        private MeshHandle _lineSeriesHandle;
 
-        protected override IReadOnlyList<MeshData> Build(OutlinedPointMeshDescription description)
+        protected override void Build(OutlinedPointMeshDescription description, List<MeshData> result)
         {
             var vertices = description.Shape switch
             {
-                PointShape.Circle => MeshUtils.GetVerticesOnCircumference(hasOriginPoint: false, resolution: 32, 0.5f * description.Size, description.Origin),
+                PointShape.Circle => MeshUtils.GetVerticesOnCircumference(0.5f * description.Size, description.Origin),
                 PointShape.Square => MeshUtils.GetVerticesOnRectangle(buildOrder: MeshUtils.RectangleVerticesBuildOrder.Cyclic, angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin),
                 PointShape.Triangle => MeshUtils.GetVerticesOnEquilateralTriangle(angleAroundOriginInDeg: 180f, description.Size, description.Origin),
                 _ => throw new ArgumentOutOfRangeException()
@@ -27,7 +27,7 @@ namespace SxmTools.UIFactory.Components.Points
                 ForceBuild: description.ForceBuild
             );
 
-            return UIFactoryManager.Build(lineSeriesDescription, _lineSeriesHandle);
+            _lineSeriesHandle = UIFactoryManager.BuildMesh(lineSeriesDescription, result, _lineSeriesHandle);
         }
 
         public override void Dispose()
