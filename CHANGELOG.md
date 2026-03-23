@@ -1,5 +1,15 @@
 # UI Factory
 
+## [4.0.1] - 2026-03-23
+
+### Bug Fixes
+- Fixed grid not updating when `Labels Offset` changed — `DashLineMeshBuilder` reused the same `_positions` list instance across builds, causing `CachedMeshBuilder` to always compare the list with itself (reference equality → always cache hit → stale mesh). Now each build allocates a fresh list from `ListPool` and releases the previous one after comparison
+- Removed incorrect `ForceBuild` propagation in `DashLineMeshBuilder` — inner `LineSeriesMeshDescription` and `SolidLineMeshDescription` no longer blindly pass through `ForceBuild`, relying on correct structural equality instead
+
+### Internal
+- Added `CollectionEquality` utility with `SequenceEqual`/`SetEqual` and corresponding `GetHashCode` methods for `IList<T>` and `HashSet<T>`
+- Added structural `Equals`/`GetHashCode` overrides to `SeriesMeshDescription`, `PointSeriesMeshDescription`, and `GraphMeshDescription` — C# records use reference equality for collection fields by default, which broke `CachedMeshBuilder` comparison
+
 ## [4.0.0] - 2026-03-19
 
 ### Breaking Changes

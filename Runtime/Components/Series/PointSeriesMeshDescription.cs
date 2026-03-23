@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using SxmTools.UIFactory.Components.Points;
 using UnityEngine;
@@ -20,6 +21,14 @@ namespace SxmTools.UIFactory.Components.Series
         )
         {
         }
+
+        public bool Equals(PointSeriesMeshDescription other) =>
+            base.Equals((SeriesMeshDescription) other)
+            && Equals(Point, other?.Point)
+            && CollectionEquality.SetEqual(IgnoredPointIndices, other?.IgnoredPointIndices);
+
+        public override int GetHashCode() =>
+            HashCode.Combine(base.GetHashCode(), Point, CollectionEquality.GetSetHashCode(IgnoredPointIndices));
 
         internal override IMeshBuilder ConstructBuilder() => new PointSeriesMeshBuilder();
     }
