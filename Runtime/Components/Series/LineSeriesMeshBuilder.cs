@@ -15,7 +15,7 @@ namespace SxmTools.UIFactory.Components.Series
                 return;
 
             _lineHandles ??= ListPool<MeshHandle>.Get();
-            ResizeHandles(_lineHandles, linesCount);
+            _lineHandles.ResizeHandles(linesCount);
 
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
@@ -48,20 +48,6 @@ namespace SxmTools.UIFactory.Components.Series
 
             ListPool<MeshHandle>.Release(_lineHandles);
             _lineHandles = null;
-        }
-
-        private static void ResizeHandles(List<MeshHandle> handles, int targetCount)
-        {
-            for (var i = handles.Count - 1; i >= targetCount; i--)
-            {
-                handles[i].Dispose();
-                handles.RemoveAt(i);
-            }
-
-            for (var i = handles.Count; i < targetCount; i++)
-            {
-                handles.Add(new MeshHandle());
-            }
         }
     }
 }
