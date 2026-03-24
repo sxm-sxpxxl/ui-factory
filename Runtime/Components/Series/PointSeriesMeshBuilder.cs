@@ -9,7 +9,8 @@ namespace SxmTools.UIFactory.Components.Series
 
         protected override void Build(PointSeriesMeshDescription description, List<MeshData> result)
         {
-            var positionsCount = description.Positions.Count;
+            var positions = description.Positions.Collection;
+            var positionsCount = positions.Count;
 
             if (positionsCount == 0)
                 return;
@@ -17,12 +18,14 @@ namespace SxmTools.UIFactory.Components.Series
             _pointHandles ??= ListPool<MeshHandle>.Get();
             _pointHandles.ResizeHandles(positionsCount);
 
+            var ignoredIndices = description.IgnoredPointIndices?.Collection;
+
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
-                if (description.IgnoredPointIndices != null && description.IgnoredPointIndices.Contains(positionIndex))
+                if (ignoredIndices != null && ignoredIndices.Contains(positionIndex))
                     continue;
 
-                var position = description.Positions[positionIndex];
+                var position = positions[positionIndex];
                 var pointDescription = description.Point with
                 {
                     ForceBuild = description.ForceBuild || description.Point.ForceBuild,

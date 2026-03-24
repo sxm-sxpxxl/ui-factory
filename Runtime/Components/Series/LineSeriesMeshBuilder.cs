@@ -9,7 +9,8 @@ namespace SxmTools.UIFactory.Components.Series
 
         protected override void Build(LineSeriesMeshDescription description, List<MeshData> result)
         {
-            var linesCount = description.Positions.Count - (description.Closed ? 0 : 1);
+            var positions = description.Positions.Collection;
+            var linesCount = positions.Count - (description.Closed ? 0 : 1);
 
             if (linesCount <= 0)
                 return;
@@ -22,8 +23,8 @@ namespace SxmTools.UIFactory.Components.Series
                 var isLastLine = currentPositionIndex == linesCount - 1;
                 var nextPositionIndex = isLastLine && description.Closed ? 0 : currentPositionIndex + 1;
 
-                var startPosition = description.Positions[currentPositionIndex];
-                var endPosition = description.Positions[nextPositionIndex];
+                var startPosition = positions[currentPositionIndex];
+                var endPosition = positions[nextPositionIndex];
 
                 var lineDirection = (endPosition - startPosition).normalized;
                 var paddingOffset = description.Padding * lineDirection;
