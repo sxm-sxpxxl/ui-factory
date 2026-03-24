@@ -1,5 +1,11 @@
 # UI Factory
 
+## [6.0.0] - 2026-03-24
+
+### Breaking Changes
+- Removed `IDictionary<string, object>` rawData constructors from all mesh descriptions (`GraphMeshDescription`, `LineSeriesMeshDescription`, `PointSeriesMeshDescription`, `SolidLineMeshDescription`, `DashLineMeshDescription`, `FilledPointMeshDescription`, `OutlinedPointMeshDescription`) — use primary record constructors directly
+- Removed `DictionaryExtensions` utility (`Get<T>`, `GetOrDefault<T>`)
+
 ## [5.0.0] - 2026-03-24
 
 ### Bug Fixes
