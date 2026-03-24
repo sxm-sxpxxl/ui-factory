@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SxmTools.UIFactory.Components.Lines;
+﻿using SxmTools.UIFactory.Components.Lines;
 using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Series
@@ -12,16 +11,6 @@ namespace SxmTools.UIFactory.Components.Series
         bool ForceBuild = default
     ) : SeriesMeshDescription(Positions, ForceBuild)
     {
-        public LineSeriesMeshDescription(IDictionary<string, object> rawData) : this(
-            rawData.Get<SolidLineMeshDescription>("line"),
-            rawData.Get<float>("padding"),
-            rawData.Get<bool>("closed"),
-            rawData.Get<Snapshot<VersionedList<Vector2>>>("positions"),
-            rawData.GetOrDefault<bool>("force_build", default)
-        )
-        {
-        }
-
         internal override IMeshBuilder ConstructBuilder() => new LineSeriesMeshBuilder();
     }
 }
