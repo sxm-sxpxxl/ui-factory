@@ -8,6 +8,7 @@ namespace SxmTools.UIFactory.Components.Points
     internal sealed class OutlinedPointMeshBuilder : MeshBuilder<OutlinedPointMeshDescription>
     {
         private MeshHandle _lineSeriesHandle;
+        private readonly VersionedList<Vector2> _positions = new();
 
         protected override void Build(OutlinedPointMeshDescription description, List<MeshData> result)
         {
@@ -19,11 +20,15 @@ namespace SxmTools.UIFactory.Components.Points
                 _ => throw new ArgumentOutOfRangeException()
             };
 
+            _positions.Clear();
+            for (var i = 0; i < vertices.Length; i++)
+                _positions.Add(vertices[i]);
+
             var lineSeriesDescription = new LineSeriesMeshDescription(
                 Line: description.Outline,
                 Padding: 0f,
                 Closed: true,
-                Positions: vertices,
+                Positions: new Snapshot<VersionedList<Vector2>>(_positions),
                 ForceBuild: description.ForceBuild
             );
 

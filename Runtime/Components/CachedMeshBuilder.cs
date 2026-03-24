@@ -23,12 +23,17 @@ namespace SxmTools.UIFactory.Components
                 return;
             }
 
+            var startIndex = result.Count;
             _meshBuilder.Build(description, result);
 
             _cached.description = description;
             _cached.result ??= ListPool<MeshData>.Get();
             _cached.result.Clear();
-            _cached.result.AddRange(result);
+
+            for (var i = startIndex; i < result.Count; i++)
+            {
+                _cached.result.Add(result[i]);
+            }
 
             return;
 

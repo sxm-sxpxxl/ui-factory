@@ -8,7 +8,7 @@ namespace SxmTools.UIFactory.Components.Series
         SolidLineMeshDescription Line,
         float Padding,
         bool Closed,
-        IList<Vector2> Positions,
+        Snapshot<VersionedList<Vector2>> Positions,
         bool ForceBuild = default
     ) : SeriesMeshDescription(Positions, ForceBuild)
     {
@@ -16,7 +16,7 @@ namespace SxmTools.UIFactory.Components.Series
             rawData.Get<SolidLineMeshDescription>("line"),
             rawData.Get<float>("padding"),
             rawData.Get<bool>("closed"),
-            rawData.Get<IList<Vector2>>("positions"),
+            rawData.Get<Snapshot<VersionedList<Vector2>>>("positions"),
             rawData.GetOrDefault<bool>("force_build", default)
         )
         {

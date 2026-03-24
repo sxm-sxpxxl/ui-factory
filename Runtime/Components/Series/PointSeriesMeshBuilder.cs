@@ -9,20 +9,23 @@ namespace SxmTools.UIFactory.Components.Series
 
         protected override void Build(PointSeriesMeshDescription description, List<MeshData> result)
         {
-            var positionsCount = description.Positions.Count;
+            var positions = description.Positions.Collection;
+            var positionsCount = positions.Count;
 
             if (positionsCount == 0)
                 return;
 
             _pointHandles ??= ListPool<MeshHandle>.Get();
-            ResizeHandles(_pointHandles, positionsCount);
+            _pointHandles.ResizeHandles(positionsCount);
+
+            var ignoredIndices = description.IgnoredPointIndices?.Collection;
 
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
-                if (description.IgnoredPointIndices != null && description.IgnoredPointIndices.Contains(positionIndex))
+                if (ignoredIndices != null && ignoredIndices.Contains(positionIndex))
                     continue;
 
-                var position = description.Positions[positionIndex];
+                var position = positions[positionIndex];
                 var pointDescription = description.Point with
                 {
                     ForceBuild = description.ForceBuild || description.Point.ForceBuild,
@@ -42,20 +45,6 @@ namespace SxmTools.UIFactory.Components.Series
 
             ListPool<MeshHandle>.Release(_pointHandles);
             _pointHandles = null;
-        }
-
-        private static void ResizeHandles(List<MeshHandle> handles, int targetCount)
-        {
-            for (var i = handles.Count - 1; i >= targetCount; i--)
-            {
-                handles[i].Dispose();
-                handles.RemoveAt(i);
-            }
-
-            for (var i = handles.Count; i < targetCount; i++)
-            {
-                handles.Add(new MeshHandle());
-            }
         }
     }
 }
