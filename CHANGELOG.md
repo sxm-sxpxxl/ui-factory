@@ -1,5 +1,26 @@
 # UI Factory
 
+## [5.0.0] - 2026-03-24
+
+### Bug Fixes
+- Fixed `CachedMeshBuilder` caching all accumulated mesh data instead of only newly built data — `startIndex` now tracks where new results begin, preventing mesh duplication on cache miss
+- Fixed collection change detection in mesh descriptions — replaced O(n) element-by-element comparison (`CollectionEquality`) with O(1) version-based comparison via `Snapshot<T>` struct
+
+### Breaking Changes
+- Collection fields in mesh descriptions changed from `IList<Vector2>` / `HashSet<int>` to `Snapshot<VersionedList<Vector2>>` / `Snapshot<VersionedHashSet<int>>?` — clients must wrap collections in `VersionedList`/`VersionedHashSet` and pass them via `new Snapshot<T>(collection)` when constructing descriptions
+
+### Performance
+- Collection equality in descriptions is now O(1) regardless of collection size — `Snapshot<T>` compares reference identity + version counter instead of iterating elements
+
+### Internal
+- Added `IVersioned` interface, `VersionedList<T>`, and `VersionedHashSet<T>` — collection wrappers that increment a version counter on every mutation
+- Added `Snapshot<T>` readonly struct — captures collection reference + version at creation time for lightweight equality
+- Replaced `IList<Vector2>` with `Snapshot<VersionedList<Vector2>>` and `HashSet<int>` with `Snapshot<VersionedHashSet<int>>?` in `GraphMeshDescription`, `SeriesMeshDescription`, `PointSeriesMeshDescription`, `LineSeriesMeshDescription`
+- Removed `CollectionEquality` utility and custom `Equals`/`GetHashCode` overrides from all description records — record-generated equality now works correctly via `Snapshot<T>.Equals`
+- Removed `MeshDescription.Snapshot()` virtual method and all overrides — no longer needed with version-based comparison
+- Extracted `ResizeHandles` from `LineSeriesMeshBuilder`/`PointSeriesMeshBuilder` into `MeshHandleExtensions` extension method
+- `DashLineMeshBuilder` and `OutlinedPointMeshBuilder` now use `VersionedList<Vector2>` as persistent field instead of `ListPool` allocation
+
 ## [4.0.1] - 2026-03-23
 
 ### Bug Fixes
