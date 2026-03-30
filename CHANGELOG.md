@@ -1,5 +1,11 @@
 # UI Factory
 
+## [6.1.0] - 2026-03-30
+
+### Features
+- Added point selection support — `GraphMeshDescription` and `PointSeriesMeshDescription` now accept optional `SelectionPoint` and `SelectionPointIndices` parameters to render selected points with a distinct visual style
+- `PointSeriesMeshBuilder` renders points matching `SelectionPointIndices` using `SelectionPoint` description, falling back to the default `Point` if not provided
+
 ## [6.0.0] - 2026-03-24
 
 ### Breaking Changes
