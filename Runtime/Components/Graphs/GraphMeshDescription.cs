@@ -10,6 +10,8 @@ namespace SxmTools.UIFactory.Components.Graphs
         SolidLineMeshDescription Line,
         [CanBeNull] PointMeshDescription Point = default,
         [CanBeNull] Snapshot<VersionedHashSet<int>>? IgnoredPointIndices = default,
+        [CanBeNull] PointMeshDescription SelectionPoint = default,
+        [CanBeNull] Snapshot<VersionedHashSet<int>>? SelectionPointIndices = default,
         bool ForceBuild = default
     ) : MeshDescription(ForceBuild)
     {
