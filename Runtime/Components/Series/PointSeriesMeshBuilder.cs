@@ -19,6 +19,7 @@ namespace SxmTools.UIFactory.Components.Series
             _pointHandles.ResizeHandles(positionsCount);
 
             var ignoredIndices = description.IgnoredPointIndices?.Collection;
+            var selectionIndices = description.SelectionPointIndices?.Collection;
 
             for (var positionIndex = 0; positionIndex < positionsCount; positionIndex++)
             {
@@ -26,13 +27,17 @@ namespace SxmTools.UIFactory.Components.Series
                     continue;
 
                 var position = positions[positionIndex];
-                var pointDescription = description.Point with
+
+                var pointDescription = selectionIndices?.Contains(positionIndex) ?? false ? description.SelectionPoint : description.Point;
+                pointDescription ??= description.Point;
+
+                var positionedPointDescription = pointDescription with
                 {
                     ForceBuild = description.ForceBuild || description.Point.ForceBuild,
                     Origin = position
                 };
 
-                _pointHandles[positionIndex] = UIFactoryManager.BuildMesh(pointDescription, result, _pointHandles[positionIndex]);
+                _pointHandles[positionIndex] = UIFactoryManager.BuildMesh(positionedPointDescription, result, _pointHandles[positionIndex]);
             }
         }
 

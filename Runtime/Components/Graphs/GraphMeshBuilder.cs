@@ -27,6 +27,8 @@ namespace SxmTools.UIFactory.Components.Graphs
                 Point: description.Point,
                 Positions: description.Positions,
                 IgnoredPointIndices: description.IgnoredPointIndices,
+                SelectionPoint: description.SelectionPoint,
+                SelectionPointIndices: description.SelectionPointIndices,
                 ForceBuild: description.ForceBuild
             );
             _pointSeriesHandle = UIFactoryManager.BuildMesh(pointSeriesDescription, result, _pointSeriesHandle);
