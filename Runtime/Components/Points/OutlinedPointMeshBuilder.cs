@@ -37,7 +37,7 @@ namespace SxmTools.UIFactory.Components.Points
 
         public override void Dispose()
         {
-            _lineSeriesHandle.Dispose();
+            _lineSeriesHandle?.Dispose();
         }
     }
 }

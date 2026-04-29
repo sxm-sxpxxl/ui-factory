@@ -40,7 +40,7 @@ namespace SxmTools.UIFactory.Components.Lines
 
         public override void Dispose()
         {
-            _lineSeriesHandle.Dispose();
+            _lineSeriesHandle?.Dispose();
         }
     }
 }
