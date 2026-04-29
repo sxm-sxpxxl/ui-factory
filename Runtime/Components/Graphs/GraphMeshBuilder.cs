@@ -36,7 +36,7 @@ namespace SxmTools.UIFactory.Components.Graphs
 
         public override void Dispose()
         {
-            _lineSeriesHandle.Dispose();
+            _lineSeriesHandle?.Dispose();
             _pointSeriesHandle?.Dispose();
         }
     }

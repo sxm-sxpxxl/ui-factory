@@ -42,6 +42,9 @@ namespace SxmTools.UIFactory.Components.Series
 
         public override void Dispose()
         {
+            if (_lineHandles == null)
+                return;
+
             foreach (var handle in _lineHandles)
             {
                 handle.Dispose();

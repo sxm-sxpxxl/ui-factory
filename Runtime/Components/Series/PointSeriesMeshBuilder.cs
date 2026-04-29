@@ -43,6 +43,9 @@ namespace SxmTools.UIFactory.Components.Series
 
         public override void Dispose()
         {
+            if (_pointHandles == null)
+                return;
+
             foreach (var handle in _pointHandles)
             {
                 handle.Dispose();

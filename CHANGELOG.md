@@ -1,5 +1,11 @@
 # UI Factory
 
+## [6.1.1] - 2026-04-30
+
+### Bug Fixes
+- Fixed `NullReferenceException` in `LineSeriesMeshBuilder.Dispose` and `PointSeriesMeshBuilder.Dispose` when `Build` returned early without initializing the internal handle list (`linesCount`/`positionsCount` of zero) — added null guard before iteration
+- Added defensive null guards (`?.Dispose()`) in `GraphMeshBuilder`, `DashLineMeshBuilder` and `OutlinedPointMeshBuilder` for the case when the builder is disposed without `Build` having been called
+
 ## [6.1.0] - 2026-03-30
 
 ### Features
