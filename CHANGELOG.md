@@ -1,5 +1,21 @@
 # UI Factory
 
+## [6.2.0] - 2026-05-10
+
+### Features
+- All mesh description record properties changed from `{ get; init; }` to `{ get; set; }` — descriptions are now mutable post-construction, enabling reuse of a single description instance across frames without `with`-expression cloning. Affects `MeshDescription` (`ForceBuild`), `LineMeshDescription`, `SolidLineMeshDescription`, `DashLineMeshDescription`, `PointMeshDescription`, `FilledPointMeshDescription`, `OutlinedPointMeshDescription`, `SeriesMeshDescription`, `LineSeriesMeshDescription`, `PointSeriesMeshDescription`, `GraphMeshDescription`
+
+### Performance
+- `DashLineMeshBuilder` now produces a single `MeshData` containing all dash quads via Burst-compiled `MeshUtils.CreateDashLineMesh` instead of delegating per-segment to `LineSeriesMeshBuilder` — reduces `MeshGenerationContext.Allocate` calls from N (one per dash) to 1 (one per dashed line); eliminates `ImplicitPool<MeshData>` growth pressure when many dashed lines are rendered
+- Reusable inner descriptions in `LineSeriesMeshBuilder`, `PointSeriesMeshBuilder`, `GraphMeshBuilder` — mutated per-build with `ForceBuild=true` to bypass `CachedMeshBuilder` reference-equality check, avoiding per-frame allocation of inner description objects (`SolidLineMeshDescription`, `FilledPointMeshDescription`, `OutlinedPointMeshDescription`, `LineSeriesMeshDescription`, `PointSeriesMeshDescription`)
+- `DashLineMeshBuilder` reallocates its `MeshData` only when `dashesCount` changes (one-shot for static charts; native realloc per frame on resize, no GC)
+
+### Internal
+- All mesh description records migrated to primary-constructor syntax with explicit `{ get; set; } = Param;` body initializers — consistent pattern enabling mutability without losing record-generated equality / `Equals` / `GetHashCode`
+- Added `MeshData.AllocateQuads(int count)` factory for batch quad allocation (`4 * count` vertices, `6 * count` indices)
+- Added Burst-compiled `BurstProcedures.FillDashes` in `MeshUtils.Rectangle.cs` — fills N dash quads in one pass, supports arbitrary line direction via perpendicular vector (no axis-alignment assumption)
+- Removed `_lineSeriesHandle`, `_positions`, and reusable inner `LineSeriesMeshDescription` / `SolidLineMeshDescription` from `DashLineMeshBuilder` — all dash geometry now built inline in a single Burst call
+
 ## [6.1.1] - 2026-04-30
 
 ### Bug Fixes
