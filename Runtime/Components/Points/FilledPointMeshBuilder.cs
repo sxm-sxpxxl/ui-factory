@@ -27,7 +27,7 @@ namespace SxmTools.UIFactory.Components.Points
                 }
                 case PointShape.Square:
                 {
-                    if (!_resultQuad.Inited) _resultQuad = MeshData.AllocateQuad();
+                    if (!_resultQuad.Inited) _resultQuad = MeshData.AllocateQuads(count: 1);
                     MeshUtils.CreateRectangleMesh(ref _resultQuad, angleAroundOriginInDeg: 180f, Vector2.one * description.Size, description.Origin, description.Color);
                     result.Add(_resultQuad);
                     break;

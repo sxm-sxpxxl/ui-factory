@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+using SxmTools.UIFactory.Components.Points;
 using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
@@ -6,6 +8,8 @@ namespace SxmTools.UIFactory.Components.Series
     internal sealed class PointSeriesMeshBuilder : MeshBuilder<PointSeriesMeshDescription>
     {
         private List<MeshHandle> _pointHandles;
+        private FilledPointMeshDescription _reusableFilled;
+        private OutlinedPointMeshDescription _reusableOutlined;
 
         protected override void Build(PointSeriesMeshDescription description, List<MeshData> result)
         {
@@ -28,16 +32,46 @@ namespace SxmTools.UIFactory.Components.Series
 
                 var position = positions[positionIndex];
 
-                var pointDescription = selectionIndices?.Contains(positionIndex) ?? false ? description.SelectionPoint : description.Point;
-                pointDescription ??= description.Point;
+                var sourceDescription = selectionIndices?.Contains(positionIndex) ?? false ? description.SelectionPoint : description.Point;
+                sourceDescription ??= description.Point;
 
-                var positionedPointDescription = pointDescription with
+                var reusableDescription = GetReusableMatching(sourceDescription);
+                if (reusableDescription == null)
+                    continue;
+
+                reusableDescription.Origin = position;
+
+                _pointHandles[positionIndex] = UIFactoryManager.BuildMesh(reusableDescription, result, _pointHandles[positionIndex]);
+            }
+
+            return;
+
+            [CanBeNull]
+            PointMeshDescription GetReusableMatching(PointMeshDescription source)
+            {
+                switch (source)
                 {
-                    ForceBuild = description.ForceBuild || description.Point.ForceBuild,
-                    Origin = position
-                };
-
-                _pointHandles[positionIndex] = UIFactoryManager.BuildMesh(positionedPointDescription, result, _pointHandles[positionIndex]);
+                    case FilledPointMeshDescription filled:
+                    {
+                        _reusableFilled ??= new FilledPointMeshDescription(default, 0f, default, ForceBuild: true);
+                        _reusableFilled.Color = filled.Color;
+                        _reusableFilled.Size = filled.Size;
+                        _reusableFilled.Shape = filled.Shape;
+                        return _reusableFilled;
+                    }
+                    case OutlinedPointMeshDescription outlined:
+                    {
+                        _reusableOutlined ??= new OutlinedPointMeshDescription(null, 0f, default, ForceBuild: true);
+                        _reusableOutlined.Outline = outlined.Outline;
+                        _reusableOutlined.Size = outlined.Size;
+                        _reusableOutlined.Shape = outlined.Shape;
+                        return _reusableOutlined;
+                    }
+                    default:
+                    {
+                        return null;
+                    }
+                }
             }
         }
 

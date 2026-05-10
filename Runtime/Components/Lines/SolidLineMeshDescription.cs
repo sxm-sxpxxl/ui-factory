@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Lines
 {

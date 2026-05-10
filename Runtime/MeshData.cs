@@ -29,7 +29,7 @@ namespace SxmTools.UIFactory
             Inited = false;
         }
 
-        public static MeshData AllocateQuad() => new(vertices: 4, indices: 6);
+        public static MeshData AllocateQuads(int count) => new(vertices: 4 * count, indices: 6 * count);
 
         public static MeshData AllocateTriangle() => new(vertices: 3, indices: 3);
 

@@ -1,4 +1,4 @@
-﻿using SxmTools.UIFactory.Components.Lines;
+using SxmTools.UIFactory.Components.Lines;
 using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Series
@@ -11,6 +11,10 @@ namespace SxmTools.UIFactory.Components.Series
         bool ForceBuild = default
     ) : SeriesMeshDescription(Positions, ForceBuild)
     {
+        public SolidLineMeshDescription Line { get; set; } = Line;
+        public float Padding { get; set; } = Padding;
+        public bool Closed { get; set; } = Closed;
+
         internal override IMeshBuilder ConstructBuilder() => new LineSeriesMeshBuilder();
     }
 }

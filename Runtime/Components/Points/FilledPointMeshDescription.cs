@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Points
 {
@@ -10,6 +10,8 @@ namespace SxmTools.UIFactory.Components.Points
         bool ForceBuild = default
     ) : PointMeshDescription(Size, Shape, Origin, ForceBuild)
     {
+        public Color32 Color { get; set; } = Color;
+
         internal override IMeshBuilder ConstructBuilder() => new FilledPointMeshBuilder();
     }
 }

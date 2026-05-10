@@ -1,4 +1,4 @@
-﻿using SxmTools.UIFactory.Components.Lines;
+using SxmTools.UIFactory.Components.Lines;
 using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Points
@@ -11,6 +11,8 @@ namespace SxmTools.UIFactory.Components.Points
         bool ForceBuild = default
     ) : PointMeshDescription(Size, Shape, Origin, ForceBuild)
     {
+        public SolidLineMeshDescription Outline { get; set; } = Outline;
+
         internal override IMeshBuilder ConstructBuilder() => new OutlinedPointMeshBuilder();
     }
 }
