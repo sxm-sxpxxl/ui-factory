@@ -1,46 +1,51 @@
 using System.Collections.Generic;
-using SxmTools.UIFactory.Components.Series;
 using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Lines
 {
     internal sealed class DashLineMeshBuilder : MeshBuilder<DashLineMeshDescription>
     {
-        private MeshHandle _lineSeriesHandle;
-        private readonly VersionedList<Vector2> _positions = new();
+        private MeshData _result;
+        private int _dashesCount;
 
         protected override void Build(DashLineMeshDescription description, List<MeshData> result)
         {
             var dashWidth = description.DashWidth;
             var dashGap = description.DashGap;
+            var lineLength = description.LineLength;
 
-            var dashesCount = Mathf.CeilToInt((description.LineLength + dashGap) / (dashWidth + dashGap));
-            var positionsCount = dashesCount + 1;
+            var dashesCount = Mathf.Max(0, Mathf.CeilToInt((lineLength + dashGap) / (dashWidth + dashGap)));
+            if (dashesCount == 0)
+                return;
 
-            _positions.Clear();
-
-            for (var i = 0; i < positionsCount; i++)
+            if (_dashesCount != dashesCount)
             {
-                var position = Vector2.Lerp(description.StartPosition, description.EndPosition, (float) i / dashesCount);
-                _positions.Add(position);
+                if (_result.Inited)
+                {
+                    _result.Dispose();
+                }
+
+                _result = MeshData.AllocateQuads(dashesCount);
+                _dashesCount = dashesCount;
             }
 
-            var lineSeriesDescription = new LineSeriesMeshDescription(
-                Line: new SolidLineMeshDescription(
-                    Thickness: description.Thickness,
-                    Color: description.Color
-                ),
-                Padding: 0.5f * description.DashGap,
-                Closed: false,
-                Positions: new Snapshot<VersionedList<Vector2>>(_positions)
+            MeshUtils.CreateDashLineMesh(
+                ref _result,
+                dashesCount,
+                description.StartPosition,
+                description.EndPosition,
+                description.DashGap,
+                description.Thickness,
+                description.Color
             );
 
-            _lineSeriesHandle = UIFactoryManager.BuildMesh(lineSeriesDescription, result, _lineSeriesHandle);
+            result.Add(_result);
         }
 
         public override void Dispose()
         {
-            _lineSeriesHandle?.Dispose();
+            _result.Dispose();
+            _dashesCount = 0;
         }
     }
 }

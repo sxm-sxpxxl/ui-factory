@@ -21,6 +21,11 @@ namespace SxmTools.UIFactory.Components
             BurstProcedures.FillLine(ref data.Vertices, ref data.Indices, startPoint, endPoint, thickness, color);
         }
 
+        public static void CreateDashLineMesh(ref MeshData data, int dashesCount, Vector2 startPoint, Vector2 endPoint, float dashGap, float thickness, Color32 color)
+        {
+            BurstProcedures.FillDashes(ref data.Vertices, ref data.Indices, dashesCount, startPoint, endPoint, dashGap, thickness, color);
+        }
+
         public static void CreateRectangleMesh(ref MeshData data, float angleAroundOriginInDeg, Vector2 size, Vector2 origin = default, Color32 color = default)
         {
             BurstProcedures.FillRectangle(ref data.Vertices, ref data.Indices, size, origin, angleAroundOriginInDeg, color);
@@ -55,6 +60,59 @@ namespace SxmTools.UIFactory.Components
                 float angleDeg = math.degrees(angleRad);
 
                 FillRectangle(ref vertices, ref indices, size, origin, angleDeg, color);
+            }
+
+            [BurstCompile]
+            public static void FillDashes(
+                ref NativeArray<Vertex> vertices,
+                ref NativeArray<ushort> indices,
+                int dashesCount,
+                in float2 lineStart,
+                in float2 lineEnd,
+                float dashGap,
+                float thickness,
+                in Color32 color)
+            {
+                if (dashesCount <= 0)
+                    return;
+
+                float2 lineDir = lineEnd - lineStart;
+                float lineLength = math.length(lineDir);
+                if (lineLength <= 0f)
+                    return;
+
+                float2 unitDir = lineDir / lineLength;
+                float2 paddingOffset = unitDir * (0.5f * dashGap);
+                float2 halfPerp = new float2(-unitDir.y, unitDir.x) * (0.5f * thickness);
+
+                for (int i = 0; i < dashesCount; i++)
+                {
+                    float t0 = (float) i / dashesCount;
+                    float t1 = (float) (i + 1) / dashesCount;
+
+                    float2 p0 = math.lerp(lineStart, lineEnd, t0) + paddingOffset;
+                    float2 p1 = math.lerp(lineStart, lineEnd, t1) - paddingOffset;
+
+                    float2 c0 = p0 - halfPerp;
+                    float2 c1 = p0 + halfPerp;
+                    float2 c2 = p1 - halfPerp;
+                    float2 c3 = p1 + halfPerp;
+
+                    int vIdx = i * 4;
+                    int iIdx = i * 6;
+
+                    vertices[vIdx + 0] = new Vertex { position = new Vector3(c0.x, c0.y, 0f), tint = color };
+                    vertices[vIdx + 1] = new Vertex { position = new Vector3(c1.x, c1.y, 0f), tint = color };
+                    vertices[vIdx + 2] = new Vertex { position = new Vector3(c2.x, c2.y, 0f), tint = color };
+                    vertices[vIdx + 3] = new Vertex { position = new Vector3(c3.x, c3.y, 0f), tint = color };
+
+                    indices[iIdx + 0] = (ushort) (vIdx + 0);
+                    indices[iIdx + 1] = (ushort) (vIdx + 2);
+                    indices[iIdx + 2] = (ushort) (vIdx + 1);
+                    indices[iIdx + 3] = (ushort) (vIdx + 1);
+                    indices[iIdx + 4] = (ushort) (vIdx + 2);
+                    indices[iIdx + 5] = (ushort) (vIdx + 3);
+                }
             }
 
             [BurstCompile]

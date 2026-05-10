@@ -8,7 +8,7 @@ namespace SxmTools.UIFactory.Components.Lines
 
         public override void Init()
         {
-            _result = MeshData.AllocateQuad();
+            _result = MeshData.AllocateQuads(count: 1);
         }
 
         protected override void Build(SolidLineMeshDescription description, List<MeshData> result)

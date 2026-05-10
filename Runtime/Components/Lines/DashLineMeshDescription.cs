@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace SxmTools.UIFactory.Components.Lines
 {
@@ -12,6 +12,9 @@ namespace SxmTools.UIFactory.Components.Lines
         bool ForceBuild = default
     ) : LineMeshDescription(Thickness, Color, StartPosition, EndPosition, ForceBuild)
     {
+        public float DashWidth { get; set; } = DashWidth;
+        public float DashGap { get; set; } = DashGap;
+
         internal override IMeshBuilder ConstructBuilder() => new DashLineMeshBuilder();
     }
 }

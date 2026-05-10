@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using SxmTools.UIFactory.Components.Lines;
 using UnityEngine.Pool;
 
 namespace SxmTools.UIFactory.Components.Series
@@ -6,6 +7,7 @@ namespace SxmTools.UIFactory.Components.Series
     internal sealed class LineSeriesMeshBuilder : MeshBuilder<LineSeriesMeshDescription>
     {
         private List<MeshHandle> _lineHandles;
+        private SolidLineMeshDescription _reusableLine;
 
         protected override void Build(LineSeriesMeshDescription description, List<MeshData> result)
         {
@@ -18,6 +20,10 @@ namespace SxmTools.UIFactory.Components.Series
             _lineHandles ??= ListPool<MeshHandle>.Get();
             _lineHandles.ResizeHandles(linesCount);
 
+            _reusableLine ??= new SolidLineMeshDescription(Thickness: 0, Color: default, ForceBuild: true);
+            _reusableLine.Thickness = description.Line.Thickness;
+            _reusableLine.Color = description.Line.Color;
+
             for (var currentPositionIndex = 0; currentPositionIndex < linesCount; currentPositionIndex++)
             {
                 var isLastLine = currentPositionIndex == linesCount - 1;
@@ -29,14 +35,10 @@ namespace SxmTools.UIFactory.Components.Series
                 var lineDirection = (endPosition - startPosition).normalized;
                 var paddingOffset = description.Padding * lineDirection;
 
-                var lineDescription = description.Line with
-                {
-                    ForceBuild = description.ForceBuild || description.Line.ForceBuild,
-                    StartPosition = startPosition + paddingOffset,
-                    EndPosition = endPosition - paddingOffset
-                };
+                _reusableLine.StartPosition = startPosition + paddingOffset;
+                _reusableLine.EndPosition = endPosition - paddingOffset;
 
-                _lineHandles[currentPositionIndex] = UIFactoryManager.BuildMesh(lineDescription, result, _lineHandles[currentPositionIndex]);
+                _lineHandles[currentPositionIndex] = UIFactoryManager.BuildMesh(_reusableLine, result, _lineHandles[currentPositionIndex]);
             }
         }
 
