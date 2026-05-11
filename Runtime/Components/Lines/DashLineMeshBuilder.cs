@@ -14,8 +14,14 @@ namespace SxmTools.UIFactory.Components.Lines
             var dashGap = description.DashGap;
             var lineLength = description.LineLength;
 
+            if (lineLength <= 0f)
+                return;
+
             var dashesCount = Mathf.Max(0, Mathf.CeilToInt((lineLength + dashGap) / (dashWidth + dashGap)));
             if (dashesCount == 0)
+                return;
+
+            if (lineLength / dashesCount <= dashGap)
                 return;
 
             if (_dashesCount != dashesCount)
