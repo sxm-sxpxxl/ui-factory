@@ -1,5 +1,11 @@
 # UI Factory
 
+## [6.2.1] - 2026-05-11
+
+### Bug Fixes
+- Fixed `DashLineMeshBuilder` rendering a triangular artifact from uninitialized native memory when the requested line was zero-length (e.g. an axis-projection line collapsing to a point at the chart border). The Burst-compiled `FillDashes` procedure used to return early on `lineLength <= 0f` after the `MeshData` quad buffer had already been allocated with `NativeArrayOptions.UninitializedMemory` — the unwritten buffer was then handed to the renderer. The early-return is now performed in `DashLineMeshBuilder.Build` before allocation, so nothing is added to the mesh result when the line cannot be drawn
+- Added a guard for lines shorter than a single dash gap (`lineLength / dashesCount <= dashGap`) — under the previous direct-vertex computation such cases produced a flipped/oversized quad. The original `LineSeriesMeshBuilder`-based path tolerated this incidentally via `math.atan2` symmetry; the new direct path skips rendering instead
+
 ## [6.2.0] - 2026-05-10
 
 ### Features
