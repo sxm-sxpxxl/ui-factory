@@ -1,5 +1,10 @@
 # UI Factory
 
+## [6.3.0] - 2026-06-07
+
+### Performance
+- `VersionedList<T>` and `VersionedHashSet<T>` now expose a public `GetEnumerator()` returning the concrete `List<T>.Enumerator` / `HashSet<T>.Enumerator` struct, so `foreach` over either collection no longer boxes the enumerator onto the heap. The `IEnumerable<T>` / `IEnumerable` implementations are now explicit — boxing occurs only when iterating through the interface (e.g. via LINQ), matching the `System.Collections.Generic.List<T>` pattern
+
 ## [6.2.1] - 2026-05-11
 
 ### Bug Fixes
