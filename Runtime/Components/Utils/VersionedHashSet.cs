@@ -32,7 +32,8 @@ namespace SxmTools.UIFactory.Components
 
         public bool Contains(T item) => _set.Contains(item);
 
-        public IEnumerator<T> GetEnumerator() => _set.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public HashSet<T>.Enumerator GetEnumerator() => _set.GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => _set.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _set.GetEnumerator();
     }
 }
