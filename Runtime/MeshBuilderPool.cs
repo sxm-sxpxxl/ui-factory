@@ -7,6 +7,7 @@ namespace SxmTools.UIFactory
     internal sealed class MeshBuilderPool : IObjectPool<IMeshBuilder>
     {
         public int CountInactive => _pool.CountInactive;
+        public int CountActive => _usedElements.Count;
 
         private readonly MeshDescription _description;
         private readonly ObjectPool<IMeshBuilder> _pool;

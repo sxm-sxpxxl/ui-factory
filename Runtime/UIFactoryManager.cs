@@ -12,6 +12,20 @@ namespace SxmTools.UIFactory
         private static readonly Dictionary<Type, MeshBuilderPool> Pools = new();
         private static readonly List<MeshData> Result = new();
 
+        public static int ActiveBuilderCount
+        {
+            get
+            {
+                var count = 0;
+                foreach (var pool in Pools.Values)
+                {
+                    count += pool.CountActive;
+                }
+
+                return count;
+            }
+        }
+
         /// <summary>
         /// Build a mesh described in the description with caching of a previous result in the handle.
         /// </summary>
