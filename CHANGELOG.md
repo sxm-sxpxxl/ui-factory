@@ -1,5 +1,10 @@
 # UI Factory
 
+## [6.4.0] - 2026-09-03
+
+### Features
+- `UIFactoryManager.ActiveBuilderCount` reports how many mesh builders are currently checked out by handles. Each of them owns native vertex and index buffers until its handle is disposed, so the number is the quickest way to tell whether a client releases the meshes it draws — the UI Line Chart tests use it to prove that a chart leaving its panel frees everything
+
 ## [6.3.0] - 2026-06-07
 
 ### Performance
