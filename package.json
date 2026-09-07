@@ -1,10 +1,10 @@
 {
   "name": "com.sxm-tools.ui-factory",
-  "version": "6.4.0",
+  "version": "7.0.0",
   "displayName": "UI Factory",
-  "description": "Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to UIElements format.",
-  "unity": "2020.3",
-  "unityRelease": "17f1",
+  "description": "Mesh builder for custom UI Toolkit controls: describe a line, a point marker, a series of points or a whole graph, and the factory builds and caches the mesh for generateVisualContent. Geometry is Burst-compiled.",
+  "unity": "2021.2",
+  "unityRelease": "0f1",
   "license": "MIT",
   "keywords": [
     "unity",
