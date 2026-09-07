@@ -1,5 +1,13 @@
 # UI Factory
 
+## [7.0.0] - 2026-09-07
+
+### Breaking Changes
+- The manifest requires Unity 2021.2 or newer instead of 2020.3. The mesh descriptions have been C# 9 records since they were introduced, so the package never compiled on 2020.3; the requirement now says so, and the Package Manager refuses the install up front instead of failing at compile time
+
+### Internal
+- The README describes the package as it is today: the handle-and-description model, the components, how cached meshes are reused through record equality and `Snapshot<T>` versions, a minimal control that draws with it, and the install steps under the `com.sxm-tools.ui-factory` name
+
 ## [6.4.0] - 2026-09-03
 
 ### Features
