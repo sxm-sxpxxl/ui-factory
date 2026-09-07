@@ -3,8 +3,8 @@
   "version": "6.4.0",
   "displayName": "UI Factory",
   "description": "Factory of various UI components, from primitives (line, point) to complex objects (graph). UI meshes support conversion to UIElements format.",
-  "unity": "2020.3",
-  "unityRelease": "17f1",
+  "unity": "2021.2",
+  "unityRelease": "0f1",
   "license": "MIT",
   "keywords": [
     "unity",
