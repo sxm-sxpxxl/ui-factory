@@ -8,7 +8,11 @@
 
 ## About
 
-UI Factory builds meshes for custom UI Toolkit controls. You describe a shape as a plain record — a line, a point marker, a series of points, a whole graph — and hand it to the `MeshGenerationContext` inside `generateVisualContent`; the factory turns it into vertices and indices, writes them into the context and keeps the result in a handle, so the next repaint rebuilds the mesh only when the description changed. Geometry is computed by Burst-compiled procedures. [UI Line Chart](https://github.com/sxm-sxpxxl/ui-line-chart) draws everything through it.
+UI Factory builds meshes for custom UI Toolkit controls.
+
+You describe a shape as a plain record: a line, a point marker, a series of points, a whole graph. Inside `generateVisualContent` you hand the record to the `MeshGenerationContext`, and the factory turns it into vertices and indices and writes them into the context.
+
+The result stays in a handle. On the next repaint the mesh is rebuilt only when the description changed. Geometry is computed by Burst-compiled procedures.
 
 ## Components
 
@@ -17,7 +21,13 @@ UI Factory builds meshes for custom UI Toolkit controls. You describe a shape as
 - **Series** — `LineSeriesMeshDescription` joins a list of positions into one polyline (optionally closed, with padding); `PointSeriesMeshDescription` puts a marker on every position, can skip indices and highlight a selection with a second marker
 - **Graph** — `GraphMeshDescription` combines a line series with its point markers and selection in one description
 
-Descriptions are C# records, so two descriptions with the same values are equal, and the builder behind a handle reuses the cached mesh when the description it receives equals the previous one. Collections go in as a `Snapshot<T>` of a `VersionedList<T>` or `VersionedHashSet<T>`: the snapshot carries the collection's version, so a changed list counts as a changed description without comparing elements. Set `ForceBuild` to skip the comparison when you already know the mesh must be rebuilt — UI Line Chart keeps one mutable description per element and does exactly that.
+## Caching
+
+Descriptions are C# records, so two descriptions with the same values are equal. The builder behind a handle compares the description it receives with the previous one and reuses the cached mesh when they match.
+
+Collections go in as a `Snapshot<T>` of a `VersionedList<T>` or `VersionedHashSet<T>`. The snapshot carries the collection's version, so a changed list counts as a changed description without comparing elements.
+
+Set `ForceBuild` to skip the comparison when you already know the mesh must be rebuilt, for example when you keep one mutable description per element and change it in place.
 
 ## Usage
 
@@ -58,11 +68,13 @@ public sealed class Divider : VisualElement, IDisposable
 }
 ```
 
-`BuildMesh` returns the handle to keep for the next repaint; pass `null` the first time. A handle owns native vertex and index buffers, so dispose it when the element leaves the panel, as above. `UIFactoryManager.ActiveBuilderCount` tells how many handles currently hold a builder — a number that grows while nothing is being added is a leaked handle.
+`BuildMesh` returns the handle to keep for the next repaint; pass `null` the first time.
+
+A handle owns native vertex and index buffers, so dispose it when the element leaves the panel, as above. `UIFactoryManager.ActiveBuilderCount` tells how many handles currently hold a builder. A number that grows while nothing is being added is a leaked handle.
 
 ## Install
 
-Unity 2021.2 or newer (the descriptions are C# 9 records); UI Line Chart uses the package on Unity 6. The only dependency, `com.unity.burst`, comes from the Unity registry.
+Unity 2021.2 or newer (the descriptions are C# 9 records), tested on Unity 6. The only dependency, `com.unity.burst`, comes from the Unity registry.
 
 ### OpenUPM
 
