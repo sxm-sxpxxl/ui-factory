@@ -1,9 +1,9 @@
 {
   "name": "com.sxm-tools.ui-factory",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "displayName": "UI Factory",
   "description": "Mesh builder for custom UI Toolkit controls: describe a line, a point marker, a series of points or a whole graph, and the factory builds and caches the mesh for generateVisualContent. Geometry is Burst-compiled.",
-  "unity": "2021.2",
+  "unity": "2022.3",
   "unityRelease": "0f1",
   "license": "MIT",
   "keywords": [

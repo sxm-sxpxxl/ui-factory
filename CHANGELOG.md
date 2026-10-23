@@ -1,5 +1,10 @@
 # UI Factory
 
+## [7.0.2] - 2026-10-23
+
+### Bug Fixes
+- The manifest requires Unity 2022.3 instead of 2021.2. The `com.unity.burst` 1.8.28 dependency already needs 2022.3, so an older editor could not resolve the package; the requirement now says so
+
 ## [7.0.1] - 2026-10-23
 
 ### Internal

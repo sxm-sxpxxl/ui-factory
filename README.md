@@ -1,5 +1,5 @@
-[![Package Version](https://img.shields.io/badge/version-7.0.1-blue)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#install)
-[![Unity Version](https://img.shields.io/badge/unity-2021.2%2B-coral)](https://unity.com/releases/editor/archive)
+[![Package Version](https://img.shields.io/badge/version-7.0.2-blue)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#install)
+[![Unity Version](https://img.shields.io/badge/unity-2022.3%2B-coral)](https://unity.com/releases/editor/archive)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/sxm-sxpxxl/ui-factory/blob/master/LICENSE.md)
 
 <p align="left">
@@ -74,7 +74,7 @@ A handle owns native vertex and index buffers, so dispose it when the element le
 
 ## Install
 
-Unity 2021.2 or newer (the descriptions are C# 9 records), tested on Unity 6. The only dependency, `com.unity.burst`, comes from the Unity registry.
+Unity 2022.3 or newer, tested on Unity 6. The only dependency, `com.unity.burst` 1.8.28, comes from the Unity registry and sets that minimum; the package's own code needs 2021.2, since the descriptions are C# 9 records.
 
 ### OpenUPM
 
@@ -96,7 +96,7 @@ Or add the scoped registry and the dependency to `Packages/manifest.json` yourse
     }
   ],
   "dependencies": {
-    "com.sxm-tools.ui-factory": "7.0.0"
+    "com.sxm-tools.ui-factory": "7.0.2"
   }
 }
 ```
