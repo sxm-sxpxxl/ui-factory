@@ -1,5 +1,10 @@
 # UI Factory
 
+## [7.0.1] - 2026-10-23
+
+### Internal
+- The manifest names the author SXM Tools, as the studio logo writes it; the package itself is unchanged
+
 ## [7.0.0] - 2026-09-07
 
 ### Breaking Changes

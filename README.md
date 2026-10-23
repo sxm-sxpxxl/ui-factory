@@ -1,4 +1,4 @@
-[![Package Version](https://img.shields.io/badge/version-7.0.0-blue)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#install)
+[![Package Version](https://img.shields.io/badge/version-7.0.1-blue)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#install)
 [![Unity Version](https://img.shields.io/badge/unity-2021.2%2B-coral)](https://unity.com/releases/editor/archive)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/sxm-sxpxxl/ui-factory/blob/master/LICENSE.md)
 
