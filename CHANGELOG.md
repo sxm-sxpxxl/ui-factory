@@ -1,5 +1,10 @@
 # UI Factory
 
+## [7.0.3] - 2026-11-01
+
+### Internal
+- The manifest gives the author's email as sxm.sxpxxl.dev@gmail.com, the address the Asset Store listing uses for support; the package itself is unchanged
+
 ## [7.0.2] - 2026-10-23
 
 ### Bug Fixes
