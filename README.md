@@ -1,4 +1,4 @@
-[![Package Version](https://img.shields.io/badge/version-7.0.2-blue)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#install)
+[![Package Version](https://img.shields.io/badge/version-7.0.3-blue)](https://github.com/sxm-sxpxxl/ui-factory?tab=readme-ov-file#install)
 [![Unity Version](https://img.shields.io/badge/unity-2022.3%2B-coral)](https://unity.com/releases/editor/archive)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/sxm-sxpxxl/ui-factory/blob/master/LICENSE.md)
 
@@ -96,7 +96,7 @@ Or add the scoped registry and the dependency to `Packages/manifest.json` yourse
     }
   ],
   "dependencies": {
-    "com.sxm-tools.ui-factory": "7.0.2"
+    "com.sxm-tools.ui-factory": "7.0.3"
   }
 }
 ```
